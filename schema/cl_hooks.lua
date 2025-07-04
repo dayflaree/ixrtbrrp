@@ -48,14 +48,6 @@ function Schema:CanPlayerJoinClass(client, class, info)
 	return false
 end
 
-function Schema:CharacterLoaded(character)
-	if (character:IsCombine()) then
-		vgui.Create("ixCombineDisplay")
-	elseif (IsValid(ix.gui.combine)) then
-		ix.gui.combine:Remove()
-	end
-end
-
 function Schema:PlayerFootstep(client, position, foot, soundName, volume)
 	return true
 end
@@ -71,39 +63,6 @@ local COLOR_BLACK_WHITE = {
 	["$pp_colour_mulg"] = 0,
 	["$pp_colour_mulb"] = 0
 }
-
-function Schema:PreDrawOpaqueRenderables()
-	local viewEntity = LocalPlayer():GetViewEntity()
-
-	if (IsValid(viewEntity) and viewEntity:GetClass():find("scanner")) then
-		self.LastViewEntity = viewEntity
-		self.LastViewEntity:SetNoDraw(true)
-
-		scannerFirstPerson = true
-		return
-	end
-
-	if (self.LastViewEntity != viewEntity) then
-		if (IsValid(self.LastViewEntity)) then
-			self.LastViewEntity:SetNoDraw(false)
-		end
-
-		self.LastViewEntity = nil
-		scannerFirstPerson = false
-	end
-end
-
-function Schema:ShouldDrawCrosshair()
-	if (scannerFirstPerson) then
-		return false
-	end
-end
-
-function Schema:AdjustMouseSensitivity()
-	if (scannerFirstPerson) then
-		return 0.3
-	end
-end
 
 -- creates labels in the status screen
 function Schema:CreateCharacterInfo(panel)
@@ -215,30 +174,8 @@ function Schema:PopulateHelpMenu(tabs)
 	end
 end
 
-netstream.Hook("CombineDisplayMessage", function(text, color, arguments)
-	if (IsValid(ix.gui.combine)) then
-		ix.gui.combine:AddLine(text, color, nil, unpack(arguments))
-	end
-end)
-
 netstream.Hook("PlaySound", function(sound)
 	surface.PlaySound(sound)
-end)
-
-netstream.Hook("Frequency", function(oldFrequency)
-	Derma_StringRequest("Frequency", "What would you like to set the frequency to?", oldFrequency, function(text)
-		ix.command.Send("SetFreq", text)
-	end)
-end)
-
-netstream.Hook("ViewData", function(target, cid, data)
-	Schema:AddCombineDisplayMessage("@cViewData")
-	vgui.Create("ixViewData"):Populate(target, cid, data)
-end)
-
-netstream.Hook("ViewObjectives", function(data)
-	Schema:AddCombineDisplayMessage("@cViewObjectives")
-	vgui.Create("ixViewObjectives"):Populate(data)
 end)
 
 function Schema:OnSpawnMenuOpen()

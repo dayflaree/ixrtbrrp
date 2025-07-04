@@ -73,31 +73,6 @@ do
 	COMMAND.arguments = ix.type.text
 
 	function COMMAND:OnRun(client, message)
-		local character = client:GetCharacter()
-		local inventory = character:GetInventory()
-
-		if (inventory:HasItem("request_device") or client:IsCombine() or client:Team() == FACTION_ADMIN) then
-			if (!client:IsRestricted()) then
-				Schema:AddCombineDisplayMessage("@cRequest")
-
-				ix.chat.Send(client, "request", message)
-				ix.chat.Send(client, "request_eavesdrop", message)
-			else
-				return "@notNow"
-			end
-		else
-			return "@needRequestDevice"
-		end
-	end
-
-	ix.command.Add("Request", COMMAND)
-end
-
-do
-	local COMMAND = {}
-	COMMAND.arguments = ix.type.text
-
-	function COMMAND:OnRun(client, message)
 		if (!client:IsRestricted()) then
 			ix.chat.Send(client, "broadcast", message)
 		else
