@@ -121,7 +121,7 @@ function PANEL:Init()
         end
     end
 
-    self.currentFaction = ix.faction.GetIndex("citizen")
+    self.currentFaction = ix.faction.GetIndex("1_citizen")
 
     local function updateFactionModel()
         if ( !self.currentFaction ) then return end
@@ -460,7 +460,7 @@ function PANEL:Populate()
 
     self.repopulatePanels = {}
 
-    self.currentFaction = ix.faction.GetIndex("citizen")
+    self.currentFaction = ix.faction.GetIndex("1_citizen")
 
     -- payload is empty because we attempted to send it - for whatever reason we're back here again so we need to repopulate
     if (!self.payload.faction) then

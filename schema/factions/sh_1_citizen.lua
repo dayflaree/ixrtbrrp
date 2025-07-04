@@ -32,6 +32,9 @@ function FACTION:OnCharacterCreated(client, character)
 		name = character:GetName(),
 		id = id
 	})
+	
+	-- Automatically set the citizen class
+	character:JoinClass(CLASS_CITIZEN)
 end
 
 FACTION_CITIZEN = FACTION.index
