@@ -5,17 +5,21 @@ PLUGIN.author = "Chessnut, Modified by AI"
 PLUGIN.description = "A vertical, boxed weapon selection UI."
 
 if (CLIENT) then
+    -- Move getBoxMetrics to the top of the CLIENT block so it's always defined before use
+    local function getBoxMetrics()
+        local boxWidth = ScreenScale(26)
+        local boxHeight = ScreenScale(16)
+        local boxSpacing = ScreenScale(3)
+        local font = "ixWeaponSelectFontSmall"
+        return boxWidth, boxHeight, boxSpacing, font
+    end
+
     PLUGIN.index = PLUGIN.index or 1
     PLUGIN.deltaIndex = PLUGIN.deltaIndex or PLUGIN.index
     PLUGIN.infoAlpha = PLUGIN.infoAlpha or 0
     PLUGIN.alpha = PLUGIN.alpha or 0
     PLUGIN.alphaDelta = PLUGIN.alphaDelta or PLUGIN.alpha
     PLUGIN.fadeTime = PLUGIN.fadeTime or 0
-
-    local boxWidth = ScreenScale(26)
-    local boxHeight = ScreenScale(16)
-    local boxSpacing = ScreenScale(3)
-    local font = "ixWeaponSelectFontSmall"
 
     function PLUGIN:LoadFonts(baseFont, genericFont)
         surface.CreateFont("ixWeaponSelectFontSmall", {
@@ -35,27 +39,28 @@ if (CLIENT) then
         self.alphaDelta = Lerp(frameTime * 10, self.alphaDelta, self.alpha)
         local fraction = self.alphaDelta
         if (fraction > 0.01) then
-            local x = ScrW() * 0.02
-            local y = ScrH() * 0.25
-            self.deltaIndex = Lerp(frameTime * 12, self.deltaIndex, self.index)
+            local boxWidth, boxHeight, boxSpacing, font = getBoxMetrics()
             local weapons = LocalPlayer():GetWeapons()
+            local numSlots = math.max(6, #weapons)
+            local totalHeight = numSlots * boxHeight + (numSlots - 1) * boxSpacing
+            local x = math.Clamp(ScrW() * 0.02, 8, ScrW() - boxWidth - 8)
+            -- Vertically center the stack
+            local y = (ScrH() - totalHeight) / 2
+            self.deltaIndex = Lerp(frameTime * 12, self.deltaIndex, self.index)
             local index = self.deltaIndex
             if (!weapons[self.index]) then
                 self.index = #weapons
             end
-            for i = 1, 6 do
+            for i = 1, numSlots do
                 local isSelected = (i == self.index)
                 local boxColor = isSelected and Color(80, 80, 80, 220) or Color(40, 40, 40, 200)
                 local borderColor = isSelected and Color(180, 180, 180, 255) or Color(80, 80, 80, 255)
                 local textColor = isSelected and color_white or Color(200, 200, 200, 255)
                 local slotY = y + (i - 1) * (boxHeight + boxSpacing)
-                -- Draw box
                 draw.RoundedBox(4, x, slotY, boxWidth, boxHeight, boxColor)
                 surface.SetDrawColor(borderColor)
                 surface.DrawOutlinedRect(x, slotY, boxWidth, boxHeight, 1)
-                -- Draw slot number
                 draw.SimpleText("[" .. i .. "]", font, x + boxWidth / 2, slotY + boxHeight / 2, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-                -- Draw weapon name for selected slot
                 if isSelected and weapons[i] then
                     local weaponName = language.GetPhrase(weapons[i]:GetClass()):utf8upper()
                     if (weapons[i].GetPrintName) then
@@ -108,14 +113,14 @@ if (CLIENT) then
         local weapons = client:GetWeapons()
         if (bind:find("invprev") and !bTool) then
             local oldIndex = self.index
-            self.index = math.min(self.index + 1, #weapons)
+            self.index = math.max(self.index - 1, 1)
             if (self.alpha == 0 or oldIndex != self.index) then
                 self:OnIndexChanged(weapons[self.index])
             end
             return true
         elseif (bind:find("invnext") and !bTool) then
             local oldIndex = self.index
-            self.index = math.max(self.index - 1, 1)
+            self.index = math.min(self.index + 1, #weapons)
             if (self.alpha == 0 or oldIndex != self.index) then
                 self:OnIndexChanged(weapons[self.index])
             end
