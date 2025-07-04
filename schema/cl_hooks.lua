@@ -72,39 +72,6 @@ local COLOR_BLACK_WHITE = {
 	["$pp_colour_mulb"] = 0
 }
 
-local combineOverlay = ix.util.GetMaterial("effects/combine_binocoverlay")
-local scannerFirstPerson = false
-
-function Schema:RenderScreenspaceEffects()
-	local colorModify = {}
-	colorModify["$pp_colour_colour"] = 0.77
-
-	if (system.IsWindows()) then
-		colorModify["$pp_colour_brightness"] = -0.02
-		colorModify["$pp_colour_contrast"] = 1.2
-	else
-		colorModify["$pp_colour_brightness"] = 0
-		colorModify["$pp_colour_contrast"] = 1
-	end
-
-	if (scannerFirstPerson) then
-		COLOR_BLACK_WHITE["$pp_colour_brightness"] = 0.05 + math.sin(RealTime() * 10) * 0.01
-		colorModify = COLOR_BLACK_WHITE
-	end
-
-	DrawColorModify(colorModify)
-
-	if (LocalPlayer():IsCombine()) then
-		render.UpdateScreenEffectTexture()
-
-		combineOverlay:SetFloat("$alpha", 0.5)
-		combineOverlay:SetInt("$ignorez", 1)
-
-		render.SetMaterial(combineOverlay)
-		render.DrawScreenQuad()
-	end
-end
-
 function Schema:PreDrawOpaqueRenderables()
 	local viewEntity = LocalPlayer():GetViewEntity()
 
