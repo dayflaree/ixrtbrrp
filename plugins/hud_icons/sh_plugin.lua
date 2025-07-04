@@ -7,10 +7,10 @@ PLUGIN.description = "A minimalist icon-based HUD for player stats."
 if CLIENT then
     -- Icon paths
     local ICONS = {
-        { key = "health",  mat = Material("mrp/hud/health.png", "smooth"),  color = Color(200, 60, 60),  get = function() return LocalPlayer():Health() / math.max(LocalPlayer():GetMaxHealth(), 1) end },
-        { key = "armor",   mat = Material("mrp/hud/armor.png", "smooth"),   color = Color(80, 120, 200), get = function() return LocalPlayer():Armor() / 100 end },
-        { key = "hunger",  mat = Material("mrp/hud/hunger.png", "smooth"),  color = Color(200, 180, 80), get = function() return 1 end }, -- No functionality yet
-        { key = "thirst",  mat = Material("mrp/hud/thirst.png", "smooth"),  color = Color(80, 180, 220), get = function() return 1 end }, -- No functionality yet
+        { key = "health",  mat = Material("mrp/hud/health.png", "smooth"),  color = Color(255, 255, 255),  get = function() return LocalPlayer():Health() / math.max(LocalPlayer():GetMaxHealth(), 1) end },
+        { key = "armor",   mat = Material("mrp/hud/armor.png", "smooth"),   color = Color(255, 255, 255), get = function() return LocalPlayer():Armor() / 100 end },
+        { key = "hunger",  mat = Material("mrp/hud/hunger.png", "smooth"),  color = Color(255, 255, 255), get = function() return 1 end }, -- No functionality yet
+        { key = "thirst",  mat = Material("mrp/hud/thirst.png", "smooth"),  color = Color(255, 255, 255), get = function() return 1 end }, -- No functionality yet
     }
 
     -- Icon size and spacing

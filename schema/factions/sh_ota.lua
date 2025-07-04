@@ -6,7 +6,26 @@ FACTION.pay = 40
 FACTION.models = {"models/zrtbr/combine_soldier.mdl"}
 FACTION.isDefault = false
 FACTION.isGloballyRecognized = true
-FACTION.runSounds = {[0] = "NPC_CombineS.RunFootstepLeft", [1] = "NPC_CombineS.RunFootstepRight"}
+
+FACTION.gearSounds = {
+	"npc/combine_soldier/gear1.wav",
+    "npc/combine_soldier/gear2.wav",
+    "npc/combine_soldier/gear3.wav",
+    "npc/combine_soldier/gear4.wav",
+    "npc/combine_soldier/gear5.wav",
+    "npc/combine_soldier/gear6.wav"
+}
+
+function FACTION:ModifyPlayerStep(client, data)
+	if data.running then
+		local gearSound = table.Random(self.gearSounds)
+		timer.Simple(0.05, function()
+			if IsValid(client) and client:IsRunning() then
+				client:EmitSound(gearSound, 60, 100, 0.3, CHAN_AUTO)
+			end
+		end)
+	end
+end
 
 function FACTION:GetDefaultName(client)
 	return "OTA-ECHO.OWS-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
