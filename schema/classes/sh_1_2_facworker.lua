@@ -1,8 +1,8 @@
-CLASS.name = "Civil Worker's Union"
+CLASS.name = "Factory Worker"
 CLASS.faction = FACTION_CITIZEN
 
 function CLASS:CanSwitchTo(client)
 	return false
 end
 
-CLASS_CWU = CLASS.index
+CLASS_FACWORKER = CLASS.index
