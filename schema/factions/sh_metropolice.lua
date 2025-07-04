@@ -38,6 +38,20 @@ function FACTION:ModifyPlayerStep(client, data)
 	end
 end
 
+FACTION.painSounds = {
+	"rtbr/npc/metropolice/pain1.wav",
+    "rtbr/npc/metropolice/pain2.wav",
+    "rtbr/npc/metropolice/pain3.wav",
+    "rtbr/npc/metropolice/pain4.wav"
+}
+
+FACTION.deathSounds = {
+	"rtbr/npc/metropolice/die1.wav",
+    "rtbr/npc/metropolice/die2.wav",
+    "rtbr/npc/metropolice/die3.wav",
+    "rtbr/npc/metropolice/die4.wav"
+}
+
 function FACTION:OnCharacterCreated(client, character)
 	local inventory = character:GetInventory()
 
@@ -139,3 +153,24 @@ FACTION.spawnCam = {
     modelSequence = {"lineidle01", "lineidle02", "lineidle03", "lineidle04", "idle_angry"},
     fov = 40
 }
+
+-- Override Helix's pain sound system for Metropolice
+hook.Add("GetPlayerPainSound", "MetropolicePainSounds", function(client)
+	if IsValid(client) and client:Team() == FACTION_MPF then
+		local faction = ix.faction.Get(FACTION_MPF)
+		if faction and faction.painSounds then
+			return table.Random(faction.painSounds)
+		end
+	end
+end)
+
+-- Override Helix's death sound system for Metropolice
+hook.Add("PlayerDeathSound", "MetropoliceDeathSounds", function(client)
+	if IsValid(client) and client:Team() == FACTION_MPF then
+		local faction = ix.faction.Get(FACTION_MPF)
+		if faction and faction.deathSounds then
+			client:EmitSound(table.Random(faction.deathSounds), 80, 100, 1, CHAN_VOICE)
+			return false -- Prevent default death sound
+		end
+	end
+end)

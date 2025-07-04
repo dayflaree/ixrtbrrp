@@ -55,19 +55,13 @@ end
 
 -- Schema playermodels
 
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_01.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_02.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_03.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_04.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_05.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_06.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_07.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_08.mdl", "metrocop")
-ix.anim.SetModelClass("models/zrtbr/humans/group06/male_09.mdl", "metrocop")
 ix.anim.SetModelClass("models/zrtbr/female_police.mdl", "metrocop")
 ix.anim.SetModelClass("models/zrtbr/police.mdl", "metrocop")
 ix.anim.SetModelClass("models/zrtbr/police_elite.mdl", "metrocop")
 ix.anim.SetModelClass("models/rtbr_retail/police.mdl", "metrocop")
+ix.anim.SetModelClass("models/zrtbr/combine_soldier.mdl", "overwatch")
+ix.anim.SetModelClass("models/zrtbr/combine_soldier_prison.mdl", "overwatch")
+ix.anim.SetModelClass("models/rtbr_retail/combine_soldier.mdl", "overwatch")
 
 function Schema:ZeroNumber(number, length)
 	local amount = math.max(0, length - string.len(number))
