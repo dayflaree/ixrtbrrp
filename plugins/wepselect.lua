@@ -7,7 +7,7 @@ PLUGIN.description = "A vertical, boxed weapon selection UI."
 if (CLIENT) then
     -- Move getBoxMetrics to the top of the CLIENT block so it's always defined before use
     local function getBoxMetrics()
-        local boxWidth = ScreenScale(26)
+        local boxWidth = ScreenScale(16)
         local boxHeight = ScreenScale(16)
         local boxSpacing = ScreenScale(3)
         local font = "ixWeaponSelectFontSmall"

@@ -85,8 +85,6 @@ function ITEM:EquipClothing(ply)
         COSMETIC:MakeCosmetic(ply, self.cosmeticData.bone, self:GetData("cosmeticData", self.cosmeticData), self.clothingCategory)
     end
 
-    ply:AddPart(self.uniqueID, self)
-
     if ( self.PostEquip ) then
         self:PostEquip(ply)
     end
@@ -142,8 +140,6 @@ function ITEM:UnEquipClothing(ply)
 
         COSMETIC:RemoveCosmetic(ply, self.clothingCategory)
     end
-
-    ply:RemovePart(self.uniqueID)
 
     if ( self.PostUnEquip ) then
         self:PostUnEquip(ply)
