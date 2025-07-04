@@ -1,5 +1,5 @@
 
-Schema.name = "Raising the Bar: Redux Roleplay"
+Schema.name = "RAISING THE BAR: REDUX ROLEPLAY"
 Schema.author = "dayflare"
 Schema.description = "A schema based on Raising the Bar: Redux."
 
@@ -20,6 +20,8 @@ ix.util.Include("meta/sh_character.lua")
 
 ix.flag.Add("v", "Access to light blackmarket goods.")
 ix.flag.Add("V", "Access to heavy blackmarket goods.")
+ix.flag.Add("S", "Access to the spawn menu.")
+ix.flag.Add("s", "Access to the context menu.")
 
 -- Schema config
 
