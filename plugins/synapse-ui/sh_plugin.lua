@@ -7,14 +7,14 @@ PLUGIN.schema = "HL2 RP"
 
 -- Change the icon paths below to your own custom icons!
 PLUGIN.tabIcons = {
-    ["config"] = ix.util.GetMaterial("your/custom/path/cogs.png", "smooth mips"),
-    ["help"] = ix.util.GetMaterial("your/custom/path/help.png", "smooth mips"),
-    ["inv"] = ix.util.GetMaterial("your/custom/path/suitcase.png", "smooth mips"),
-    ["menu"] = ix.util.GetMaterial("your/custom/path/menu.png", "smooth mips"),
-    ["return"] = ix.util.GetMaterial("your/custom/path/undo.png", "smooth mips"),
-    ["scoreboard"] = ix.util.GetMaterial("your/custom/path/group.png", "smooth mips"),
+    ["config"] = ix.util.GetMaterial("icons/inventory/key_icon.png", "smooth mips"),
+    ["help"] = ix.util.GetMaterial("icons/icon_quest64.png", "smooth mips"),
+    ["inv"] = ix.util.GetMaterial("icons/inventory/backpack_icon.png", "smooth mips"),
+    ["menu"] = ix.util.GetMaterial("icons/dropdown/option_icon.png", "smooth mips"),
+    ["return"] = ix.util.GetMaterial("sr_staff_manager/close.png", "smooth mips"),
+    ["scoreboard"] = ix.util.GetMaterial("icons/skills_icon.png", "smooth mips"),
     ["settings"] = ix.util.GetMaterial("your/custom/path/controls.png", "smooth mips"),
-    ["you"] = ix.util.GetMaterial("your/custom/path/id.png", "smooth mips")
+    ["you"] = ix.util.GetMaterial("icons/civic_station/license_holder.png", "smooth mips")
 }
 
 ix.util.Include("cl_plugin.lua")
