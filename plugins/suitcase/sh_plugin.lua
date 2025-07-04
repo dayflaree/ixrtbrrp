@@ -19,3 +19,69 @@ ix.util.Include("cl_hooks.lua")
 
 -- Ensure the entities/weapons directory exists for suitcase SWEPs
 -- (No code needed here, just a note for the assistant to create the folders)
+
+local supportedModels = {
+    ["models/zrtbr/humans/group01/male_01.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_02.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_03.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_04.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_05.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_06.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_07.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_08.mdl"] = true,
+    ["models/zrtbr/humans/group01/male_09.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_01.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_02.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_03.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_04.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_05.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_06.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_07.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_08.mdl"] = true,
+    ["models/zrtbr/humans/group04/male_09.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_01.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_02.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_03.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_04.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_05.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_06.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_07.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_08.mdl"] = true,
+    ["models/zrtbr/humans/group05/male_09.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_01.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_02.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_03.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_04.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_05.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_06.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_07.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_08.mdl"] = true,
+    ["models/zrtbr/humans/group07/male_09.mdl"] = true,
+}
+
+-- Explicitly map supported models to the 'citizen_male' animation class
+for model, _ in pairs(supportedModels) do
+    ix.anim.SetModelClass(model, "citizen_male")
+end
+
+-- Custom animation class for suitcase holding
+ix.anim.suitcase = {
+    normal = {
+        [ACT_MP_STAND_IDLE] = "d1_t01_luggage_idle",
+        [ACT_MP_WALK] = "luggage_walk_all",
+        [ACT_MP_RUN] = "luggage_run_all",
+    }
+}
+
+-- Set the animation hold type to 'suitcase' when holding a suitcase SWEP
+hook.Add("UpdateAnimation", "ixSuitcaseAnimClass", function(ply, velocity, maxSeqGroundSpeed)
+    local model = string.lower(ply:GetModel() or "")
+    local wep = ply:GetActiveWeapon()
+    if not supportedModels[model] then return end
+    if IsValid(wep) and (wep:GetClass() == "ix_suitcase" or wep:GetClass() == "ix_suitcase_big" or wep:GetClass() == "ix_briefcase") then
+        ply.ixAnimHoldType = "suitcase"
+        print("[SuitcaseAnim] Set hold type to 'suitcase' for", ply, "Model:", model, "Weapon:", wep:GetClass())
+    else
+        print("[SuitcaseAnim] Not using suitcase hold type for", ply, "Model:", model, "Weapon:", IsValid(wep) and wep:GetClass() or "none")
+    end
+end)
