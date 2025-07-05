@@ -1,4 +1,3 @@
-
 local RECEIVER_NAME = "ixInventoryItem"
 
 local function InventoryAction(action, itemID, invID, data)
@@ -440,6 +439,20 @@ function PANEL:BuildSlots()
             slot.Paint = function(panel, width, height)
                 surface.SetDrawColor(25, 25, 25, 50)
                 surface.DrawRect(2, 2, width - 4, height - 4)
+
+                if not panel.item then
+                    -- Draw dark grey icon overlay for empty slot
+                    local icon = ix.util.GetMaterial("icons/inventory/cmb_poly.png")
+                    surface.SetDrawColor(50, 50, 50, 200)
+                    surface.SetMaterial(icon)
+                    surface.DrawTexturedRect(2, 2, width - 4, height - 4)
+                else
+                    -- Draw dark, faded green icon overlay for occupied slot
+                    local icon = ix.util.GetMaterial("icons/inventory/cmb_item.png")
+                    surface.SetDrawColor(50, 100, 50, 200)
+                    surface.SetMaterial(icon)
+                    surface.DrawTexturedRect(2, 2, width - 4, height - 4)
+                end
 
                 if (panel:IsHovered() or panel:IsChildHovered()) then
                     surface.SetDrawColor(100, 100, 100, 25)
