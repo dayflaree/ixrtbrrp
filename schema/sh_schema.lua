@@ -18,8 +18,6 @@ ix.util.Include("meta/sh_character.lua")
 
 -- Schema flags
 
-ix.flag.Add("v", "Access to light blackmarket goods.")
-ix.flag.Add("V", "Access to heavy blackmarket goods.")
 ix.flag.Add("S", "Access to the spawn menu.")
 ix.flag.Add("s", "Access to the context menu.")
 
