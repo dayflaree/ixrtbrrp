@@ -1,4 +1,3 @@
-
 function Schema:CanPlayerUseBusiness(client, uniqueID)
 	if (client:Team() == FACTION_CITIZEN) then
 		local itemTable = ix.item.list[uniqueID]
@@ -20,4 +19,8 @@ end
 
 function Schema:CanDrive()
 	return false
+end
+
+function Schema:ShouldHideBars()
+	return true
 end

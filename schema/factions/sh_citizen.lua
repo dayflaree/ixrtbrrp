@@ -73,8 +73,8 @@ FACTION.spawnPoints = {
 }
 
 FACTION.spawnCam = {
-    pos = Vector(8065.552734 10012.942383 -271.574524),
-    ang = Angle(-0.454838 -104.517334 0.000000),
+    pos = Vector(5049, 9595, 2705),
+    ang = Angle(0, -45, 0),
     modelPos = Vector(5084, 9535, 2648),
     modelAng = Angle(0, 90, 0),
     modelSequence = {"lineidle01", "lineidle02", "lineidle03", "lineidle04", "idle_angry"},

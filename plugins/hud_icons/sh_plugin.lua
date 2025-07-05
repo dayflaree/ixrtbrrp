@@ -24,6 +24,35 @@ if CLIENT then
     local FLASH_SPEED = 1.2 -- seconds per cycle
     local DARK_COLOR = Color(50, 50, 50)
 
+    -- Stamina bar images
+    local STAMINA_LEFT = Material("mrp/hud/bar/corner.png", "smooth")
+    local STAMINA_MID = Material("mrp/hud/bar/center.png", "smooth")
+    local STAMINA_RIGHT = Material("mrp/hud/bar/corner_right.png", "smooth")
+
+    -- Bar dimensions (adjust to match yellow bar in screenshot)
+    local BAR_X = ScreenScale(8)
+    local BAR_Y = ScreenScale(4) -- moved up
+    local BAR_HEIGHT = ScreenScale(8)
+    local BAR_WIDTH = ScreenScale(180) -- Adjust as needed
+
+    local END_WIDTH = BAR_HEIGHT -- Square ends
+    local MID_WIDTH = BAR_WIDTH - END_WIDTH * 2
+
+    -- Stamina bar fade logic
+    local staminaAlpha = 0
+    local fadeSpeed = 800 -- alpha per second (even faster fade)
+
+    -- Stamina fill bar images
+    local STAMINA_FILL_LEFT = Material("mrp/hud/bar/corner_fill.png", "smooth")
+    local STAMINA_FILL_MID = Material("mrp/hud/bar/center_fill.png", "smooth")
+    local STAMINA_FILL_RIGHT = Material("mrp/hud/bar/corner_fillb.png", "smooth")
+
+    -- Color for the stamina fill bar
+    local STAMINA_FILL_COLOR = Color(171, 171, 171)
+
+    local displayedFrac = 1
+    local fillLerpSpeed = 6 -- higher = snappier, lower = smoother
+
     hook.Add("HUDPaint", "ixIconHUD", function()
         if (!IsValid(LocalPlayer()) or !LocalPlayer():Alive()) then return end
         local x = HUD_MARGIN - ScreenScale(8) -- move icons further to the left
@@ -59,5 +88,78 @@ if CLIENT then
     -- Optionally hide default bars
     hook.Add("CreateBars", "ixIconHUD_HideBars", function()
         return false
+    end)
+
+    hook.Add("HUDPaint", "ixStaminaBarEmpty", function()
+        local stm = LocalPlayer():GetLocalVar("stm", 100)
+        local belowMax = stm < 100
+        local frac = math.Clamp(stm / 100, 0, 1)
+
+        -- Smoothly interpolate the displayed fill
+        displayedFrac = Lerp(FrameTime() * fillLerpSpeed, displayedFrac, frac)
+
+        -- Fade in/out
+        if belowMax then
+            staminaAlpha = math.min(255, staminaAlpha + FrameTime() * fadeSpeed)
+        else
+            staminaAlpha = math.max(0, staminaAlpha - FrameTime() * fadeSpeed)
+        end
+
+        if staminaAlpha <= 0 then return end
+
+        -- Draw empty bar (background)
+        surface.SetMaterial(STAMINA_LEFT)
+        surface.SetDrawColor(255, 255, 255, staminaAlpha)
+        surface.DrawTexturedRect(BAR_X, BAR_Y, END_WIDTH, BAR_HEIGHT)
+
+        surface.SetMaterial(STAMINA_MID)
+        surface.SetDrawColor(255, 255, 255, staminaAlpha)
+        surface.DrawTexturedRect(BAR_X + END_WIDTH, BAR_Y, MID_WIDTH, BAR_HEIGHT)
+
+        surface.SetMaterial(STAMINA_RIGHT)
+        surface.SetDrawColor(255, 255, 255, staminaAlpha)
+        surface.DrawTexturedRect(BAR_X + END_WIDTH + MID_WIDTH, BAR_Y, END_WIDTH, BAR_HEIGHT)
+
+        -- Draw fill bar (foreground, improved logic)
+        if displayedFrac > 0 then
+            local fillTotal = BAR_WIDTH * displayedFrac
+
+            if fillTotal <= END_WIDTH then
+                -- Only enough for cropped left end
+                surface.SetMaterial(STAMINA_FILL_LEFT)
+                surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                surface.DrawTexturedRect(BAR_X, BAR_Y, fillTotal, BAR_HEIGHT)
+            elseif fillTotal <= END_WIDTH * 2 then
+                -- Enough for full left and cropped right
+                surface.SetMaterial(STAMINA_FILL_LEFT)
+                surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                surface.DrawTexturedRect(BAR_X, BAR_Y, END_WIDTH, BAR_HEIGHT)
+
+                local rightW = fillTotal - END_WIDTH
+                if rightW > 0 then
+                    surface.SetMaterial(STAMINA_FILL_RIGHT)
+                    surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                    surface.DrawTexturedRect(BAR_X + END_WIDTH, BAR_Y, rightW, BAR_HEIGHT)
+                end
+            else
+                -- Enough for full left, middle, and full right
+                surface.SetMaterial(STAMINA_FILL_LEFT)
+                surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                surface.DrawTexturedRect(BAR_X, BAR_Y, END_WIDTH, BAR_HEIGHT)
+
+                local fillMidW = fillTotal - END_WIDTH * 2
+                surface.SetMaterial(STAMINA_FILL_MID)
+                surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                surface.DrawTexturedRectUV(
+                    BAR_X + END_WIDTH, BAR_Y,
+                    fillMidW, BAR_HEIGHT,
+                    0, 0, fillMidW / MID_WIDTH, 1
+                )
+
+                surface.SetMaterial(STAMINA_FILL_RIGHT)
+                surface.SetDrawColor(STAMINA_FILL_COLOR.r, STAMINA_FILL_COLOR.g, STAMINA_FILL_COLOR.b, staminaAlpha)
+                surface.DrawTexturedRect(BAR_X + fillTotal - END_WIDTH, BAR_Y, END_WIDTH, BAR_HEIGHT)
+            end
+        end
     end)
 end 

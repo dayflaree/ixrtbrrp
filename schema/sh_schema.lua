@@ -39,10 +39,10 @@ local config = {
     maxCharacters = 4,
 	inventoryHeight = 5,
 	animMaxRate = 1,
-    walkSpeed = 80,
+    walkSpeed = 70,
     runSpeed = 180,
-    staminaDrain = 1,
-    staminaRegeneration = 2,
+    staminaDrain = 2,
+    staminaRegeneration = 1.5,
 }
 
 for k, v in pairs(config) do
