@@ -1,4 +1,3 @@
-
 FACTION.name = "Citizen"
 FACTION.description = "A regular human citizen enslaved by the Combine."
 FACTION.color = Color(150, 125, 100, 255)
@@ -27,7 +26,10 @@ function FACTION:OnCharacterCreated(client, character)
 
 	character:SetData("cid", id)
 
-	inventory:Add("suitcase", 1)
+	-- Randomly select a suitcase type
+	local suitcaseTypes = {"suitcase", "suitcase_big", "briefcase"}
+	local randomSuitcase = suitcaseTypes[math.random(1, #suitcaseTypes)]
+	inventory:Add(randomSuitcase, 1)
 	inventory:Add("cid", 1, {
 		name = character:GetName(),
 		id = id
@@ -40,7 +42,7 @@ end
 FACTION_CITIZEN = FACTION.index
 
 FACTION.spawnPoints = {
-    ["Location"] = {
+    ["Train Station"] = {
         canUse = function(character)
             return true
         end,
@@ -67,31 +69,12 @@ FACTION.spawnPoints = {
             Vector(-2433, -1312, 73),
             Vector(-2347, -1312, 73)
         }
-    },
-    ["Another Location"] = {
-        canUse = function(character)
-            return true
-        end,
-        spawns = {
-            Vector(-4913, -467, 161),
-            Vector(-4797, -467, 161),
-            Vector(-4725, -467, 161),
-            Vector(-4653, -467, 161),
-            Vector(-4519, -467, 161),
-            Vector(-4387, -467, 161),
-            Vector(-4913, -968, 161),
-            Vector(-4797, -968, 161),
-            Vector(-4725, -968, 161),
-            Vector(-4653, -968, 161),
-            Vector(-4519, -968, 161),
-            Vector(-4387, -968, 161)
-        }
     }
 }
 
 FACTION.spawnCam = {
-    pos = Vector(5049, 9595, 2705),
-    ang = Angle(0, -45, 0),
+    pos = Vector(8065.552734 10012.942383 -271.574524),
+    ang = Angle(-0.454838 -104.517334 0.000000),
     modelPos = Vector(5084, 9535, 2648),
     modelAng = Angle(0, 90, 0),
     modelSequence = {"lineidle01", "lineidle02", "lineidle03", "lineidle04", "idle_angry"},
