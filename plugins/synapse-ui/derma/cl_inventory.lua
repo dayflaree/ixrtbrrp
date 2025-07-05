@@ -441,9 +441,28 @@ function PANEL:BuildSlots()
                 surface.DrawRect(2, 2, width - 4, height - 4)
                 if not panel.item then
                     local icon = ix.util.GetMaterial("icons/inventory/cmb_poly.png")
-                    if panel.gridY == self.gridH then
-                        -- Bottom row: faded/dark red
+                    
+                    -- Check if player has suitcase items
+                    local hasSuitcase = false
+                    local character = LocalPlayer():GetCharacter()
+                    if character then
+                        local inventory = character:GetInventory()
+                        if inventory then
+                            for _, item in pairs(inventory:GetItems()) do
+                                if item.isSuitcase then
+                                    hasSuitcase = true
+                                    break
+                                end
+                            end
+                        end
+                    end
+                    
+                    if (panel.gridY == self.gridH or panel.gridY == self.gridH - 1) and not hasSuitcase then
+                        -- Bottom 2 rows: faded/dark red (locked)
                         surface.SetDrawColor(120, 30, 30, 180)
+                    elseif (panel.gridY == self.gridH or panel.gridY == self.gridH - 1) and hasSuitcase then
+                        -- Bottom 2 rows: suitcase storage (dark faded green)
+                        surface.SetDrawColor(20, 80, 20, 120)
                     else
                         -- Other empty slots: dark grey
                         surface.SetDrawColor(50, 50, 50, 200)
@@ -580,10 +599,31 @@ function PANEL:PaintOver(width, height)
 end
 
 function PANEL:IsEmpty(x, y, this)
-    -- Lock the bottom row: no items can be placed here
-    if self.gridH and y == self.gridH then
+    -- Check if player has suitcase items
+    local hasSuitcase = false
+    local character = LocalPlayer():GetCharacter()
+    if character then
+        local inventory = character:GetInventory()
+        if inventory then
+            for _, item in pairs(inventory:GetItems()) do
+                if item.isSuitcase then
+                    hasSuitcase = true
+                    break
+                end
+            end
+        end
+    end
+    
+    -- Lock the bottom 2 rows unless player has suitcase items
+    if self.gridH and (y == self.gridH or y == self.gridH - 1) and not hasSuitcase then
         return false
     end
+    
+    -- Prevent suitcase items from being placed in suitcase storage slots
+    if this and this.itemTable and this.itemTable.isSuitcase and self.gridH and (y == self.gridH or y == self.gridH - 1) then
+        return false
+    end
+    
     return (self.slots[x] and self.slots[x][y]) and (!IsValid(self.slots[x][y].item) or self.slots[x][y].item == this)
 end
 
