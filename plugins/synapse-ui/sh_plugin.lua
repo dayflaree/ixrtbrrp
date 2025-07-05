@@ -19,7 +19,6 @@ PLUGIN.tabIcons = {
 
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")
-
 ix.util.Include("cl_hooks.lua")
 
 /*

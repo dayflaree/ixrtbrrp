@@ -62,7 +62,7 @@ ix.anim.SetModelClass("models/zrtbr/combine_soldier_prison.mdl", "overwatch")
 ix.anim.SetModelClass("models/rtbr_retail/combine_soldier.mdl", "overwatch")
 
 function Schema:ZeroNumber(number, length)
-	local amount = math.max(0, length - string.len(tostring(number)))
+	local amount = math.max(0, length - string.len(number))
 	return string.rep("0", amount)..tostring(number)
 end
 
