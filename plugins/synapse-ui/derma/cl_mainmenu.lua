@@ -1,4 +1,3 @@
-
 local gradient = surface.GetTextureID("vgui/gradient-d")
 local audioFadeInTime = 2
 local animationTime = 0.5
@@ -223,6 +222,9 @@ end
 
 local vignette = Material("helix/gui/vignette.png")
 function PANEL:Paint(width, height)
+    if self.bNoBackgroundBlur then
+        return
+    end
     surface.SetDrawColor(50, 50, 50, self.currentAlpha / 2)
     surface.DrawRect(0, 0, width, height)
 

@@ -439,34 +439,34 @@ function PANEL:BuildSlots()
             slot.Paint = function(panel, width, height)
                 surface.SetDrawColor(25, 25, 25, 50)
                 surface.DrawRect(2, 2, width - 4, height - 4)
-
                 if not panel.item then
-                    -- Draw dark grey icon overlay for empty slot
                     local icon = ix.util.GetMaterial("icons/inventory/cmb_poly.png")
-                    surface.SetDrawColor(50, 50, 50, 200)
+                    if panel.gridY == self.gridH then
+                        -- Bottom row: faded/dark red
+                        surface.SetDrawColor(120, 30, 30, 180)
+                    else
+                        -- Other empty slots: dark grey
+                        surface.SetDrawColor(50, 50, 50, 200)
+                    end
                     surface.SetMaterial(icon)
                     surface.DrawTexturedRect(2, 2, width - 4, height - 4)
                 else
-                    -- Draw dark, faded green icon overlay for occupied slot
                     local icon = ix.util.GetMaterial("icons/inventory/cmb_item.png")
                     surface.SetDrawColor(50, 100, 50, 200)
                     surface.SetMaterial(icon)
                     surface.DrawTexturedRect(2, 2, width - 4, height - 4)
                 end
-
                 if (panel:IsHovered() or panel:IsChildHovered()) then
                     surface.SetDrawColor(100, 100, 100, 25)
                     surface.SetMaterial(gradient)
                     surface.DrawTexturedRect(3, 3, width - 6, height - 6)
                 end
-
                 surface.SetDrawColor(0, 0, 0, 100)
                 surface.DrawOutlinedRect(2, 2, width - 4, height - 4)
             end
             slot.OnCursorEntered = function(panel)
                 LocalPlayer():EmitSound("buttons/lightswitch2.wav", 50, 150, 0.1)
             end
-
             self.slots[x][y] = slot
         end
     end
@@ -580,6 +580,10 @@ function PANEL:PaintOver(width, height)
 end
 
 function PANEL:IsEmpty(x, y, this)
+    -- Lock the bottom row: no items can be placed here
+    if self.gridH and y == self.gridH then
+        return false
+    end
     return (self.slots[x] and self.slots[x][y]) and (!IsValid(self.slots[x][y].item) or self.slots[x][y].item == this)
 end
 
@@ -724,45 +728,66 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 
     tabs["inv"] = {
         bDefault = true,
+        bHideBackground = true,
+        buttonColor = team.GetColor(LocalPlayer():Team()),
         Create = function(info, container)
-            local canvas = container:Add("DTileLayout")
-            local canvasLayout = canvas.PerformLayout
-            canvas.PerformLayout = nil -- we'll layout after we add the panels instead of each time one is added
+            -- Main container for inventory and YOU panel
+            local mainPanel = container:Add("DPanel")
+            mainPanel:Dock(FILL)
+            mainPanel:SetDrawBackground(false)
+
+            -- Inventory grid (canvas) on the left
+            local canvas = mainPanel:Add("DTileLayout")
             canvas:SetBorder(0)
             canvas:SetSpaceX(2)
             canvas:SetSpaceY(2)
-            canvas:Dock(FILL)
+            canvas:Dock(LEFT)
 
-            ix.gui.menuInventoryContainer = canvas
-
-            local panel = canvas:Add("ixInventory")
-            panel:SetPos(0, 0)
-            panel:SetDraggable(false)
-            panel:SetSizable(false)
-            panel:SetTitle(nil)
-            panel.bNoBackgroundBlur = true
-            panel.childPanels = {}
+            -- Create the inventory panel inside the canvas
+            local invPanel = canvas:Add("ixInventory")
+            invPanel:SetDraggable(false)
+            invPanel:SetSizable(false)
+            invPanel:SetTitle(nil)
+            invPanel.bNoBackgroundBlur = true
+            invPanel.childPanels = {}
 
             local inventory = LocalPlayer():GetCharacter():GetInventory()
-
             if (inventory) then
-                panel:SetInventory(inventory)
+                invPanel:SetInventory(inventory)
+            end
+            ix.gui.inv1 = invPanel
+
+            -- Set the canvas width based on the grid size and icon size
+            if invPanel.gridW and invPanel.iconSize then
+                canvas:SetWide(invPanel.gridW * invPanel.iconSize + 8)
             end
 
-            ix.gui.inv1 = panel
+            -- YOU panel fills the rest
+            local charInfo = mainPanel:Add("ixCharacterInfo")
+            charInfo:SetWide(400) -- Prevent stretching, match Helix
+            charInfo:Dock(FILL)
+            charInfo:DockMargin(16, 0, 0, 0)
+            charInfo:Update(LocalPlayer():GetCharacter())
 
+            -- Bags (optional)
             if (ix.option.Get("openBags", true)) then
                 for _, v in pairs(inventory:GetItems()) do
-                    if (!v.isBag) then
-                        continue
-                    end
-
+                    if (!v.isBag) then continue end
                     v.functions.View.OnClick(v)
                 end
             end
-
-            canvas.PerformLayout = canvasLayout
-            canvas:Layout()
+        end,
+        OnSelected = function(info, container)
+            if (ix.gui.menu and ix.gui.menu.SetCharacterOverview) then
+                ix.gui.menu:SetCharacterOverview(true)
+                ix.gui.menu.bNoBackgroundBlur = true
+            end
+        end,
+        OnDeselected = function(info, container)
+            if (ix.gui.menu and ix.gui.menu.SetCharacterOverview) then
+                ix.gui.menu:SetCharacterOverview(false)
+                ix.gui.menu.bNoBackgroundBlur = false
+            end
         end
     }
 end)

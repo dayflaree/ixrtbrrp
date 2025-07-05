@@ -37,6 +37,7 @@ local config = {
     chatColor = Color(255, 217, 67),
     chatListenColor = Color(107, 193, 78),
     maxCharacters = 4,
+	inventoryHeight = 5,
 	animMaxRate = 1,
     walkSpeed = 80,
     runSpeed = 180,

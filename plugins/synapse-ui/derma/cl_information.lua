@@ -263,25 +263,8 @@ end
 
 vgui.Register("ixCharacterInfo", PANEL, "DScrollPanel")
 
-hook.Add("CreateMenuButtons", "ixCharInfo", function(tabs)
-    tabs["you"] = {
-        bHideBackground = true,
-        buttonColor = team.GetColor(LocalPlayer():Team()),
-        Create = function(info, container)
-            container.infoPanel = container:Add("ixCharacterInfo")
-
-            container.OnMouseReleased = function(this, key)
-                if (key == MOUSE_RIGHT) then
-                    this.infoPanel:OnSubpanelRightClick()
-                end
-            end
-        end,
-        OnSelected = function(info, container)
-            container.infoPanel:Update(LocalPlayer():GetCharacter())
-            ix.gui.menu:SetCharacterOverview(true)
-        end,
-        OnDeselected = function(info, container)
-            ix.gui.menu:SetCharacterOverview(false)
-        end
-    }
+-- Override the Helix "YOU" tab to hide it
+hook.Add("CreateMenuButtons", "ixCharInfoOverride", function(tabs)
+    -- Remove the "YOU" tab from the tabs table
+    tabs["you"] = nil
 end)
