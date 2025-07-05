@@ -18,7 +18,7 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
-SWEP.HoldType = "slam"
+SWEP.HoldType = "passive"
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)

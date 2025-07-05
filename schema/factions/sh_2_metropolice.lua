@@ -52,13 +52,6 @@ FACTION.deathSounds = {
     "rtbr/npc/metropolice/die4.wav"
 }
 
-function FACTION:OnCharacterCreated(client, character)
-	local inventory = character:GetInventory()
-
-	inventory:Add("pistol", 1)
-	inventory:Add("pistolammo", 2)
-end
-
 function FACTION:GetDefaultName(client)
 	return "MPF-RCT." .. Schema:ZeroNumber(math.random(1, 99999), 5), true
 end
