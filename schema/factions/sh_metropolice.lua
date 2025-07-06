@@ -1,18 +1,10 @@
-
 FACTION.name = "Metropolice"
 FACTION.description = "A metropolice unit working as Civil Protection."
 FACTION.color = Color(50, 100, 150)
 FACTION.pay = 10
 FACTION.models = {
-	"models/zrtbr/humans/group06/male_01.mdl",
-	"models/zrtbr/humans/group06/male_02.mdl",
-	"models/zrtbr/humans/group06/male_03.mdl",
-	"models/zrtbr/humans/group06/male_04.mdl",
-	"models/zrtbr/humans/group06/male_05.mdl",
-	"models/zrtbr/humans/group06/male_06.mdl",
-	"models/zrtbr/humans/group06/male_07.mdl",
-	"models/zrtbr/humans/group06/male_08.mdl",
-	"models/zrtbr/humans/group06/male_09.mdl"
+	"models/zrtbr/police.mdl",
+	"models/zrtbr/female_police.mdl"
 }
 FACTION.weapons = {"weapon_rtbr_stunstick"}
 FACTION.isDefault = false
@@ -52,8 +44,27 @@ FACTION.deathSounds = {
     "rtbr/npc/metropolice/die4.wav"
 }
 
+FACTION.taglines = {
+    "Defender",
+    "Hero",
+    "Jury",
+    "King",
+    "Line",
+    "Patrol",
+    "Quick",
+    "Roller",
+    "Stick",
+    "Tap",
+    "Union",
+    "Victor",
+    "Xray",
+    "Yellow",
+    "Vice"
+}
+
 function FACTION:GetDefaultName(client)
-	return "MPF-RCT." .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+    local tagline = string.upper(table.Random(self.taglines))
+    return "MPF-RCT." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
 end
 
 function FACTION:OnTransferred(character)

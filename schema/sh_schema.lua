@@ -42,6 +42,7 @@ local config = {
     walkSpeed = 70,
     runSpeed = 180,
     staminaDrain = 2,
+	punchStamina = 5,
     staminaRegeneration = 1.5,
 }
 

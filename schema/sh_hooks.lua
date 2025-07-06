@@ -24,3 +24,5 @@ end
 function Schema:ShouldHideBars()
 	return true
 end
+
+

@@ -1,4 +1,3 @@
-
 FACTION.name = "Overwatch Transhuman Arm"
 FACTION.description = "A transhuman Overwatch soldier produced by the Combine."
 FACTION.color = Color(150, 50, 50, 255)
@@ -39,8 +38,30 @@ FACTION.deathSounds = {
     "rtbr/npc/combine_soldier/die3.wav"
 }
 
+FACTION.taglines = {
+    "Leader",
+    "Flash",
+    "Ranger",
+    "Hunter",
+    "Blade",
+    "Hammer",
+    "Sweeper",
+    "Swift",
+    "Fist",
+    "Sword",
+    "Savage",
+    "Tracker",
+    "Slash",
+    "Razor",
+    "Stab",
+    "Spear",
+    "Striker",
+    "Dagger"
+}
+
 function FACTION:GetDefaultName(client)
-	return "OTA-ECHO.OWS-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+    local tagline = string.upper(table.Random(self.taglines))
+    return "OTA-ECHO." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
 end
 
 function FACTION:OnTransferred(character)

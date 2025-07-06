@@ -41,7 +41,6 @@ if (CLIENT) then
         surface.DrawTexturedRect(x - size / 2, y - size / 2, size, size)
         return true
     end
-    end
 
     hook.Add("CreateMove", "ixHandsCreateMove", function(cmd)
         if (LocalPlayer():GetLocalVar("bIsHoldingObject", false) and cmd:KeyDown(IN_ATTACK2)) then
@@ -60,6 +59,9 @@ Secondary Fire + Mouse: Rotate Object
 Reload: Drop]]
 SWEP.Purpose = "Hitting things and knocking on doors."
 SWEP.Drop = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
+SWEP.Category = "Helix"
 
 SWEP.ViewModelFOV = 45
 SWEP.ViewModelFlip = false
