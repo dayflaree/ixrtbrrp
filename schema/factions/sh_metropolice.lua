@@ -63,7 +63,7 @@ FACTION.taglines = {
 
 function FACTION:GetDefaultName(client)
     local tagline = string.upper(table.Random(self.taglines))
-    return "MPF-RCT." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+    return "MPF-00." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
 end
 
 function FACTION:OnTransferred(character)

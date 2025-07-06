@@ -1,12 +1,12 @@
-ITEM.name = "H&K MP7 PDW"
+ITEM.name = "H&K MP7A1"
 ITEM.description = ""
-ITEM.model = Model("models/weapons/smg1/w_smg1.mdl")
+ITEM.model = Model("models/weapons/smg2/w_smg2.mdl")
 ITEM.category = "Weapons"
 
 ITEM.width = 3
 ITEM.height = 2
 
-ITEM.class = "weapon_rtbr_smg1"
+ITEM.class = "weapon_rtbr_smg2"
 ITEM.weaponCategory = "primary"
 
 ITEM.ammoType = "4.6×30mm HK"

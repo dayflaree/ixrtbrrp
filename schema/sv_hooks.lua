@@ -67,67 +67,91 @@ function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers,
 		
 		-- Check for multiple voicelines (space-separated)
 		local voicelineIDs = {}
-		for voicelineID in rawText:gmatch("%S+") do
-			table.insert(voicelineIDs, voicelineID)
+		local remainingText = ""
+		local foundVoicelines = {}
+		local combinedText = ""
+		
+		-- Split the text into words and check each for voicelines
+		local words = {}
+		for word in rawText:gmatch("%S+") do
+			table.insert(words, word)
 		end
 		
-		-- If multiple voicelines found, play them in sequence
-		if #voicelineIDs > 1 then
-			local foundVoicelines = {}
-			local combinedText = ""
-			
-			-- Find all the voicelines
-			for i, voicelineID in ipairs(voicelineIDs) do
-				for k, v in ipairs(class) do
-					local info = self.voices.Get(v, voicelineID)
-					if (info) then
-						table.insert(foundVoicelines, info)
-						if i == 1 then
-							combinedText = info.text
-						else
-							combinedText = combinedText .. ". " .. info.text
-						end
-						break
-					end
+		-- Find voicelines at the beginning of the message
+		local voicelineCount = 0
+		for i, word in ipairs(words) do
+			local foundVoiceline = false
+			for k, v in ipairs(class) do
+				local info = self.voices.Get(v, word)
+				if (info) then
+					table.insert(foundVoicelines, info)
+					voicelineCount = voicelineCount + 1
+					foundVoiceline = true
+					break
 				end
 			end
 			
-			-- Add period to the end if the last voiceline doesn't end with punctuation
-			if #foundVoicelines > 1 then
-				local lastText = foundVoicelines[#foundVoicelines].text
-				if not lastText:match("[.!?]$") then
-					combinedText = combinedText .. "."
+			-- If no voiceline found, this is the start of normal text
+			if not foundVoiceline then
+				remainingText = table.concat(words, " ", i)
+				break
+			end
+		end
+		
+		-- Build combined text for voicelines
+		for i, info in ipairs(foundVoicelines) do
+			if i == 1 then
+				combinedText = info.text
+			else
+				combinedText = combinedText .. ". " .. info.text
+			end
+		end
+		
+		-- Add period to the end if the last voiceline doesn't end with punctuation
+		if #foundVoicelines > 1 then
+			local lastText = foundVoicelines[#foundVoicelines].text
+			if not lastText:match("[.!?]$") then
+				combinedText = combinedText .. "."
+			end
+		end
+		
+		-- If we found voicelines, play them and handle remaining text
+		if #foundVoicelines > 0 then
+			local volume = 80
+			if (chatType == "w") then
+				volume = 60
+			elseif (chatType == "y") then
+				volume = 150
+			end
+			
+			-- Collect all sounds into one sequence
+			local allSounds = {}
+			for i, info in ipairs(foundVoicelines) do
+				table.insert(allSounds, info.sound)
+				
+				-- Add radio off sound after the last voiceline for Combine
+				if (speaker:IsCombine() and i == #foundVoicelines) then
+					table.insert(allSounds, "NPC_MetroPolice.Radio.Off")
 				end
 			end
 			
-			-- If we found multiple voicelines, play them in sequence
-			if #foundVoicelines > 1 then
-				local volume = 80
-				if (chatType == "w") then
-					volume = 60
-				elseif (chatType == "y") then
-					volume = 150
-				end
-				
-				-- Collect all sounds into one sequence
-				local allSounds = {}
-				for i, info in ipairs(foundVoicelines) do
-					table.insert(allSounds, info.sound)
-					
-					-- Add radio off sound after the last voiceline for Combine
-					if (speaker:IsCombine() and i == #foundVoicelines) then
-						table.insert(allSounds, "NPC_MetroPolice.Radio.Off")
-					end
-				end
-				
-				-- Play all sounds as one sequence
-				local totalDuration = ix.util.EmitQueuedSounds(speaker, allSounds, nil, nil, volume)
-				
-				if (speaker:IsCombine()) then
-					return string.format("<:: %s ::>", combinedText)
+			-- Play all sounds as one sequence
+			ix.util.EmitQueuedSounds(speaker, allSounds, nil, nil, volume)
+			
+			-- Combine voiceline text with remaining text
+			local finalText = combinedText
+			if remainingText ~= "" then
+				if #foundVoicelines > 1 then
+					finalText = finalText .. " " .. remainingText
 				else
-					return combinedText
+					finalText = finalText .. ". " .. remainingText
 				end
+			end
+			
+			if (speaker:IsCombine()) then
+				return string.format("<:: %s ::>", finalText)
+			else
+				return finalText
 			end
 		end
 		

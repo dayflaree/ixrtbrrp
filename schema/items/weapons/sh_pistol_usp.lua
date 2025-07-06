@@ -1,0 +1,12 @@
+ITEM.name = "H&K USP"
+ITEM.description = ""
+ITEM.model = Model("models/weapons/pistolmatchless/w_pistol.mdl")
+ITEM.category = "Weapons"
+
+ITEM.width = 2
+ITEM.height = 1
+
+ITEM.class = "weapon_rtbr_pistolmatchless"
+ITEM.weaponCategory = "secondary"
+
+ITEM.ammoType = "9×19mm Parabellum"
