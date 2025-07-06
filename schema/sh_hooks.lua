@@ -25,4 +25,8 @@ function Schema:ShouldHideBars()
 	return true
 end
 
-
+function Schema:PlayerBindPress(client, bind, pressed)
+    if (bind:find("+zoom") and pressed) then
+        return true
+    end
+end

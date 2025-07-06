@@ -1101,7 +1101,7 @@ Schema.voices.Add("CombineSoldier", "16", "Sixteen", "rtbr/npc/combine_soldier/v
 Schema.voices.Add("CombineSoldier", "60", "Sixty", "rtbr/npc/combine_soldier/vo/sixty.wav", true)
 Schema.voices.Add("CombineSoldier", "SKYLOSTCONTACT", "Skyshield reports lost contact", "rtbr/npc/combine_soldier/vo/skyshieldreportslostcontact.wav", true)
 Schema.voices.Add("CombineSoldier", "SLAM", "Slam", "rtbr/npc/combine_soldier/vo/slam.wav", true)
-Schema.voices.Add("CombineSoldier", "Slash", "Slash", "rtbr/npc/combine_soldier/vo/slash.wav", true)
+Schema.voices.Add("CombineSoldier", "SLASH", "Slash", "rtbr/npc/combine_soldier/vo/slash.wav", true)
 Schema.voices.Add("CombineSoldier", "SPEAR", "Spear", "rtbr/npc/combine_soldier/vo/spear.wav", true)
 Schema.voices.Add("CombineSoldier", "STAB", "Stab", "rtbr/npc/combine_soldier/vo/stab.wav", true)
 Schema.voices.Add("CombineSoldier", "SECTORCONTROL", "Stabilization team has sector control", "rtbr/npc/combine_soldier/vo/stabilizationteamhassector.wav", true)

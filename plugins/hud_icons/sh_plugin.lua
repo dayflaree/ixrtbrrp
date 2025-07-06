@@ -53,6 +53,13 @@ if CLIENT then
     local displayedFrac = 1
     local fillLerpSpeed = 6 -- higher = snappier, lower = smoother
 
+    -- Ammo counter background color fade state
+    local ammoBgColor = {r = 40, g = 40, b = 40, a = 220}
+    local ammoBgTarget = {r = 40, g = 40, b = 40, a = 220}
+    local ammoBgOrig = {r = 40, g = 40, b = 40, a = 220}
+    local ammoBgFiring = {r = 76, g = 76, b = 76, a = 220}
+    local ammoFadeSpeed = 10 -- higher = faster fade
+
     hook.Add("HUDPaint", "ixIconHUD", function()
         if (!IsValid(LocalPlayer()) or !LocalPlayer():Alive()) then return end
         local x = HUD_MARGIN - ScreenScale(8) -- move icons further to the left
@@ -161,5 +168,71 @@ if CLIENT then
                 surface.DrawTexturedRect(BAR_X + fillTotal - END_WIDTH, BAR_Y, END_WIDTH, BAR_HEIGHT)
             end
         end
+    end)
+
+    -- Hide default Helix ammo counter
+    hook.Add("CanDrawAmmoHUD", "ixHideDefaultAmmoHUD", function()
+        return false
+    end)
+
+    -- Custom ammo counter HUD
+    hook.Add("HUDPaint", "ixCustomAmmoCounter", function()
+        local lp = LocalPlayer()
+        if not IsValid(lp) or not lp:Alive() then return end
+        local wep = lp:GetActiveWeapon()
+        if not IsValid(wep) or not wep:Clip1() or wep:Clip1() < 0 then return end
+        local clip = wep:Clip1()
+        local reserve = lp:GetAmmoCount(wep:GetPrimaryAmmoType())
+
+        -- Only show for weapons with a clip (not fists, tools, etc.)
+        if wep:GetMaxClip1() <= 0 then return end
+
+        -- Detect firing
+        local isFiring = lp:KeyDown(IN_ATTACK) and clip > 0
+        if isFiring then
+            ammoBgTarget = ammoBgFiring
+        else
+            ammoBgTarget = ammoBgOrig
+        end
+        -- Smoothly approach target color
+        ammoBgColor.r = Lerp(FrameTime() * ammoFadeSpeed, ammoBgColor.r, ammoBgTarget.r)
+        ammoBgColor.g = Lerp(FrameTime() * ammoFadeSpeed, ammoBgColor.g, ammoBgTarget.g)
+        ammoBgColor.b = Lerp(FrameTime() * ammoFadeSpeed, ammoBgColor.b, ammoBgTarget.b)
+        ammoBgColor.a = Lerp(FrameTime() * ammoFadeSpeed, ammoBgColor.a, ammoBgTarget.a)
+
+        -- Format: [clip/reserve]
+        local text = string.format("[%d/%d]", clip, reserve)
+
+        -- Style
+        surface.SetFont("ixMediumFont" or "DermaLarge")
+        local tw, th = surface.GetTextSize(text)
+        local padding = ScreenScale(8)
+        local boxW, boxH = tw + padding * 2, th + padding * 2
+        local x = ScrW() - boxW - ScreenScale(8)
+        local y = ScrH() - boxH - ScreenScale(6)
+
+        -- Draw background square
+        surface.SetDrawColor(math.Round(ammoBgColor.r), math.Round(ammoBgColor.g), math.Round(ammoBgColor.b), math.Round(ammoBgColor.a))
+        surface.DrawRect(x, y, boxW, boxH)
+        -- Draw border
+        surface.SetDrawColor(180, 180, 180, 255)
+        surface.DrawOutlinedRect(x, y, boxW, boxH, 1)
+
+        -- Draw square brackets
+        local bracketPad = ScreenScale(2)
+        local bracketSpine = 2 -- vertical line thickness
+        local bracketThickness = 1 -- horizontal line thickness
+        surface.SetDrawColor(220, 220, 220, 255)
+        -- Left bracket
+        surface.DrawRect(x + bracketPad, y + bracketPad, bracketSpine, boxH - bracketPad * 2)
+        surface.DrawRect(x + bracketPad, y + bracketPad, (boxW / 16), bracketThickness)
+        surface.DrawRect(x + bracketPad, y + boxH - bracketPad - bracketThickness, (boxW / 16), bracketThickness)
+        -- Right bracket
+        surface.DrawRect(x + boxW - bracketPad - bracketSpine, y + bracketPad, bracketSpine, boxH - bracketPad * 2)
+        surface.DrawRect(x + boxW - (boxW / 16) - bracketPad, y + bracketPad, (boxW / 16), bracketThickness)
+        surface.DrawRect(x + boxW - (boxW / 16) - bracketPad, y + boxH - bracketPad - bracketThickness, (boxW / 16), bracketThickness)
+
+        -- Draw text
+        draw.SimpleText(text, "ixMediumFont" or "DermaLarge", x + boxW / 2, y + boxH / 2, Color(220,220,220), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end)
 end 
