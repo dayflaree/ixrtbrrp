@@ -25,9 +25,9 @@ Schema.voices.Add("MPF_Male", "CANALBLOCK", "Canal Block", "rtbr/npc/metropolice
 Schema.voices.Add("MPF_Male", "CATCHBLIP", "Catch that blip on the stabilization read-out?", "rtbr/npc/metropolice/vo/catchthatbliponstabilization.wav", true)
 Schema.voices.Add("MPF_Male", "CAUTERIZE", "Cauterize", "rtbr/npc/metropolice/vo/cauterize.wav", true)
 Schema.voices.Add("MPF_Male", "CHECKMISCOUNT", "Check for miscount", "rtbr/npc/metropolice/vo/checkformiscount.wav", true)
-Schema.voices.Add("MPF_Male", "CHUCKLE", "Hehehehe", "rtbr/npc/metropolice/vo/chuckle.wav", true)
+Schema.voices.Add("MPF_Male", "HAHA", "Hehehehe", "rtbr/npc/metropolice/vo/chuckle.wav", true)
 Schema.voices.Add("MPF_Male", "CITIZEN", "Citizen", "rtbr/npc/metropolice/vo/citizen.wav", true)
-Schema.voices.Add("MPF_Male", "CITIZENSUMMONED", "Reporting citizen summoned to voluntary conscription for general public service detail T-94-22", "rtbr/npc/metropolice/vo/citizensummoned.wav", true)
+Schema.voices.Add("MPF_Male", "CITIZENSUMMONED", "Reporting citizen summoned to voluntary conscription for general public service detail T-94-322", "rtbr/npc/metropolice/vo/citizensummoned.wav", true)
 Schema.voices.Add("MPF_Male", "CLASSIFYDB", "Classify subject name as DB, this block is ready for clean out", "rtbr/npc/metropolice/vo/classifyasdbthisblockready.wav", true)
 Schema.voices.Add("MPF_Male", "CLEAR1", "Clear and code one-hundred", "rtbr/npc/metropolice/vo/clearandcode100.wav", true)
 Schema.voices.Add("MPF_Male", "CLEAR2", "Clear. No 647, no 10-107", "rtbr/npc/metropolice/vo/clearno647no10-107.wav", true)
@@ -344,7 +344,7 @@ Schema.voices.Add("MPF_Female", "CANALBLOCK", "Canal Block", "rtbr/npc/fempolice
 Schema.voices.Add("MPF_Female", "CATCHBLIP", "Catch that blip on the stabilization read-out?", "rtbr/npc/fempolice/vo/catchthatbliponstabilization.wav", true)
 Schema.voices.Add("MPF_Female", "CAUTERIZE", "Cauterize", "rtbr/npc/fempolice/vo/cauterize.wav", true)
 Schema.voices.Add("MPF_Female", "CHECKMISCOUNT", "Check for miscount", "rtbr/npc/fempolice/vo/checkformiscount.wav", true)
-Schema.voices.Add("MPF_Female", "CHUCKLE", "Hehehehe", "rtbr/npc/fempolice/vo/chuckle.wav", true)
+Schema.voices.Add("MPF_Female", "HAHA", "Hehehehe", "rtbr/npc/fempolice/vo/chuckle.wav", true)
 Schema.voices.Add("MPF_Female", "CITIZEN", "Citizen", "rtbr/npc/fempolice/vo/citizen.wav", true)
 Schema.voices.Add("MPF_Female", "CITIZENSUMMONED", "Reporting citizen summoned to voluntary conscription for general public service detail T-94-342", "rtbr/npc/fempolice/vo/citizensummoned.wav", true)
 Schema.voices.Add("MPF_Female", "CLASSIFYDB", "Classify subject name as DB, this block is ready for clean out", "rtbr/npc/fempolice/vo/classifyasdbthisblockready.wav", true)
@@ -644,7 +644,7 @@ Schema.voices.Add("MPF_Elite", "CANALBLOCK", "Canal Block", "rtbr/npc/elitepolic
 Schema.voices.Add("MPF_Elite", "CATCHBLIP", "Catch that blip on the stabilization read-out?", "rtbr/npc/elitepolice/vo/catchthatbliponstabilization.wav", true)
 Schema.voices.Add("MPF_Elite", "CAUTERIZE", "Cauterize", "rtbr/npc/elitepolice/vo/cauterize.wav", true)
 Schema.voices.Add("MPF_Elite", "CHECKMISCOUNT", "Check for miscount", "rtbr/npc/elitepolice/vo/checkformiscount.wav", true)
-Schema.voices.Add("MPF_Elite", "CHUCKLE", "Hehehehe", "rtbr/npc/elitepolice/vo/chuckle.wav", true)
+Schema.voices.Add("MPF_Elite", "HAHA", "Hehehehe", "rtbr/npc/elitepolice/vo/chuckle.wav", true)
 Schema.voices.Add("MPF_Elite", "CITIZEN", "Citizen", "rtbr/npc/elitepolice/vo/citizen.wav", true)
 Schema.voices.Add("MPF_Elite", "CITIZENSUMMONED", "Reporting citizen summoned to voluntary conscription for general service public detail T-94-322", "rtbr/npc/elitepolice/vo/citizensummoned.wav", true)
 Schema.voices.Add("MPF_Elite", "CLASSIFYDB", "Classify subject name as DB, this block is ready for clean out", "rtbr/npc/elitepolice/vo/classifyasdbthisblockready.wav", true)
@@ -1169,3 +1169,132 @@ end)
 Schema.voices.AddClass("CombineSoldier", function(client)
 	return client:Team() == FACTION_OTA
 end)
+
+-- Multi-voiceline system for combining multiple voicelines into one message
+-- Usage: Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "SEARCHING", "NOSTATUS"})
+
+-- Function to add punctuation to voiceline text
+local function AddPunctuation(text)
+    -- Don't add punctuation if it already ends with punctuation
+    if text:match("[.!?]$") then
+        return text
+    end
+    
+    -- Add period for most statements, question mark for questions
+    if text:lower():find("what") or text:lower():find("where") or text:lower():find("when") or 
+       text:lower():find("why") or text:lower():find("how") or text:lower():find("?") then
+        return text .. "?"
+    else
+        return text .. "."
+    end
+end
+
+-- Function to play multiple voicelines in sequence
+function Schema.voices.PlayMultipleVoicelines(client, voiceClass, voicelineIDs, delay)
+    if not IsValid(client) then return end
+    
+    delay = delay or 0.5 -- Default delay between voicelines
+    
+    local currentDelay = 0
+    for i, voicelineID in ipairs(voicelineIDs) do
+        timer.Simple(currentDelay, function()
+            if IsValid(client) then
+                -- Find and play the voiceline
+                for _, voice in pairs(Schema.voices.GetStored()) do
+                    if voice.name == voiceClass and voice.id == voicelineID then
+                        client:EmitSound(voice.sound, 75, 100, 1, CHAN_VOICE)
+                        break
+                    end
+                end
+            end
+        end)
+        currentDelay = currentDelay + delay
+    end
+end
+
+-- Function to get combined text from multiple voicelines
+function Schema.voices.GetCombinedText(voiceClass, voicelineIDs)
+    local combinedText = ""
+    
+    for i, voicelineID in ipairs(voicelineIDs) do
+        for _, voice in pairs(Schema.voices.GetStored()) do
+            if voice.name == voiceClass and voice.id == voicelineID then
+                local text = AddPunctuation(voice.text)
+                if i == 1 then
+                    combinedText = text
+                else
+                    combinedText = combinedText .. " " .. text
+                end
+                break
+            end
+        end
+    end
+    
+    return combinedText
+end
+
+-- Example usage functions
+function Schema.voices.PlayRogerSearching(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "SEARCHING", "NOSTATUS"})
+end
+
+function Schema.voices.PlayCopyMoving(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"COPY", "MOVING"})
+end
+
+function Schema.voices.PlayAffirmativeInPosition(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "INPOSITION", "READYTOGO"})
+end
+
+function Schema.voices.PlayRogerMoveIn(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "MOVEIN"})
+end
+
+function Schema.voices.PlayCopyTargetEngaging(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"COPY", "TARGET", "ENGAGING"})
+end
+
+function Schema.voices.PlayAffirmativeSecureNoContact(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "SECURE", "NOCONTACT"})
+end
+
+function Schema.voices.PlayRogerOverwatchContained(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "OVERWATCH", "TARGETCONTAINED"})
+end
+
+function Schema.voices.PlayCopyDeployedScanning(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"COPY", "DEPLOYED", "HARDPOINTSCAN"})
+end
+
+function Schema.voices.PlayAffirmativeReadyWeapons(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "READYWEAPONS", "PREPCONTACT"})
+end
+
+function Schema.voices.PlayRogerReportIn(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"AFFIRMATIVE", "REPORTIN"})
+end
+
+function Schema.voices.PlayCopyHardpointReady(client)
+    Schema.voices.PlayMultipleVoicelines(client, "MPF_Male", {"COPY", "MOVEINHARDPOINT", "READYTOGO"})
+end
+
+-- Combine Soldier examples
+function Schema.voices.PlayOverwatchSterilized(client)
+    Schema.voices.PlayMultipleVoicelines(client, "CombineSoldier", {"OVERWATCH", "TARGETSTERILIZED"})
+end
+
+function Schema.voices.PlayDeployedScanning(client)
+    Schema.voices.PlayMultipleVoicelines(client, "CombineSoldier", {"DEPLOYED", "STAYALERT"})
+end
+
+function Schema.voices.PlayReadyWeaponsHostiles(client)
+    Schema.voices.PlayMultipleVoicelines(client, "CombineSoldier", {"READYWEAPONS", "HOSTILESINBOUND"})
+end
+
+function Schema.voices.PlayRequestReinforceOverrun(client)
+    Schema.voices.PlayMultipleVoicelines(client, "CombineSoldier", {"REQUESTREINFORCE", "SECTOROVERRUN"})
+end
+
+function Schema.voices.PlayTargetContainedClear(client)
+    Schema.voices.PlayMultipleVoicelines(client, "CombineSoldier", {"TARGETCONTAINED", "REPORTINGCLEAR"})
+end
