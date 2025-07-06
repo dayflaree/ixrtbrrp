@@ -92,6 +92,14 @@ function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers,
 				end
 			end
 			
+			-- Add period to the end if the last voiceline doesn't end with punctuation
+			if #foundVoicelines > 1 then
+				local lastText = foundVoicelines[#foundVoicelines].text
+				if not lastText:match("[.!?]$") then
+					combinedText = combinedText .. "."
+				end
+			end
+			
 			-- If we found multiple voicelines, play them in sequence
 			if #foundVoicelines > 1 then
 				local volume = 80
