@@ -54,10 +54,10 @@ if CLIENT then
     local fillLerpSpeed = 6 -- higher = snappier, lower = smoother
 
     -- Ammo counter background color fade state
-    local ammoBgColor = {r = 40, g = 40, b = 40, a = 220}
-    local ammoBgTarget = {r = 40, g = 40, b = 40, a = 220}
-    local ammoBgOrig = {r = 40, g = 40, b = 40, a = 220}
-    local ammoBgFiring = {r = 76, g = 76, b = 76, a = 220}
+    local ammoBgColor = {r = 40, g = 40, b = 40, a = 200}
+    local ammoBgTarget = {r = 40, g = 40, b = 40, a = 200}
+    local ammoBgOrig = {r = 40, g = 40, b = 40, a = 200}
+    local ammoBgFiring = {r = 80, g = 80, b = 80, a = 220}
     local ammoFadeSpeed = 10 -- higher = faster fade
 
     hook.Add("HUDPaint", "ixIconHUD", function()
