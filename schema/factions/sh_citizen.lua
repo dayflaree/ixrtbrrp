@@ -26,6 +26,7 @@ function FACTION:OnCharacterCreated(client, character)
 
 	character:SetData("cid", id)
 
+	-- Randomly select a suitcase type
 	local suitcaseTypes = {"suitcase", "suitcase_big", "briefcase"}
 	local randomSuitcase = suitcaseTypes[math.random(1, #suitcaseTypes)]
 	inventory:Add(randomSuitcase, 1)
@@ -33,8 +34,7 @@ function FACTION:OnCharacterCreated(client, character)
 		name = character:GetName(),
 		id = id
 	})
-	
-	-- Automatically set the citizen class
+
 	character:JoinClass(CLASS_CITIZEN)
 end
 

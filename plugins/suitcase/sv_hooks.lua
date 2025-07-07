@@ -43,8 +43,11 @@ hook.Add("OnItemTransferred", "SuitcaseStorageDrop", function(item, oldInventory
     -- Only trigger when suitcase is being dropped (transferred to world inventory 0)
     if newInventory and newInventory:GetID() != 0 then return end
     
+    -- Check if oldInventory exists before trying to get owner
+    if not oldInventory then return end
+    
     -- Find items in suitcase storage slots and store them
-    local player = oldInventory and oldInventory:GetOwner()
+    local player = oldInventory:GetOwner()
     if not player then return end
     
     local character = player:GetCharacter()
@@ -88,6 +91,9 @@ hook.Add("OnItemTransferred", "SuitcaseStoragePickup", function(item, oldInvento
     local storedItems = suitcaseStorage[item.id]
     if not storedItems then return end
     
+    -- Check if newInventory exists before trying to get owner
+    if not newInventory then return end
+    
     local player = newInventory:GetOwner()
     if not player then return end
     
@@ -130,6 +136,9 @@ end)
 
 -- Drop suitcase if player tries to select any other SWEP
 hook.Add("PlayerSwitchWeapon", "SuitcaseDropOnSwitch", function(client, oldWeapon, newWeapon)
+    -- Don't drop suitcase if this is a newly created character
+    if client.ixNewCharacter then return end
+    
     local item, swepClass = PLUGIN:GetSuitcaseItemAndClass(client)
     if item and swepClass then
         if newWeapon and newWeapon:GetClass() ~= swepClass then
