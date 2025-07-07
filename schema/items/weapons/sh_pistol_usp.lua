@@ -1,5 +1,5 @@
 ITEM.name = "H&K USP"
-ITEM.description = ""
+ITEM.description = "Semi-automatic 9mm pistol. Standard model without match-grade modifications."
 ITEM.model = Model("models/weapons/pistolmatchless/w_pistol.mdl")
 ITEM.category = "Weapons"
 

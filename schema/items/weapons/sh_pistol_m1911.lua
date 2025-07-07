@@ -1,5 +1,5 @@
 ITEM.name = "Modified Colt M1911"
-ITEM.description = ""
+ITEM.description = "Standard .45 caliber semi-automatic pistol with external mechanical modifications for increased performance."
 ITEM.model = Model("models/weapons/alyxgun/w_alyx_gun.mdl")
 ITEM.category = "Weapons"
 

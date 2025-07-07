@@ -1,5 +1,5 @@
 ITEM.name = "Franchi SPAS-12"
-ITEM.description = ""
+ITEM.description = "12-gauge shotgun with selectable pump-action and semi-automatic operation."
 ITEM.model = Model("models/weapons/shotgun/w_shotgun.mdl")
 ITEM.category = "Weapons"
 

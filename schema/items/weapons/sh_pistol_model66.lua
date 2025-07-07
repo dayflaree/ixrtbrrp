@@ -1,5 +1,5 @@
 ITEM.name = "S&W Model 66"
-ITEM.description = ""
+ITEM.description = "Double-action revolver chambered in .357 Magnum. Stainless steel construction with a six-round cylinder."
 ITEM.model = Model("models/weapons/357snubnose/w_357.mdl")
 ITEM.category = "Weapons"
 

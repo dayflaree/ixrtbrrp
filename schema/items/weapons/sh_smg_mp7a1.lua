@@ -1,5 +1,5 @@
 ITEM.name = "H&K MP7A1"
-ITEM.description = ""
+ITEM.description = "Personal defense weapon chambered in 4.6x30mm. Features folding stock and integrated foregrip."
 ITEM.model = Model("models/weapons/smg2/w_smg2.mdl")
 ITEM.category = "Weapons"
 

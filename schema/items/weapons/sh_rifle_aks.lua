@@ -1,5 +1,5 @@
 ITEM.name = "AKS-74U"
-ITEM.description = ""
+ITEM.description = "Compact 5.45x39mm carbine with a folding stock and shortened barrel."
 ITEM.model = Model("models/weapons/akmcarbine/w_akm.mdl")
 ITEM.category = "Weapons"
 

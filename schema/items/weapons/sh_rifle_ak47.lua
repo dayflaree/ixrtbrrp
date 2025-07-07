@@ -1,5 +1,5 @@
 ITEM.name = "AK-47"
-ITEM.description = ""
+ITEM.description = "Gas-operated 7.62x39mm assault rifle with a stamped steel receiver and wooden furniture."
 ITEM.model = Model("models/weapons/akm/w_akm.mdl")
 ITEM.category = "Weapons"
 
