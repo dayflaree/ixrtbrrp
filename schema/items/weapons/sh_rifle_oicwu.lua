@@ -1,6 +1,7 @@
 ITEM.name = "XM29 OICW Union"
 ITEM.description = "Prototype weapon system modified with foreign components for increased ballistic and energy output."
 ITEM.model = Model("models/weapons/oicwscopeless/w_oicw.mdl")
+ITEM.useSound = "rtbr_wpn/oicw/foley/oicw_mag_futz_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 3

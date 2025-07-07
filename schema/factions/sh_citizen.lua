@@ -26,7 +26,6 @@ function FACTION:OnCharacterCreated(client, character)
 
 	character:SetData("cid", id)
 
-	-- Randomly select a suitcase type
 	local suitcaseTypes = {"suitcase", "suitcase_big", "briefcase"}
 	local randomSuitcase = suitcaseTypes[math.random(1, #suitcaseTypes)]
 	inventory:Add(randomSuitcase, 1)

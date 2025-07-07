@@ -1,6 +1,7 @@
 ITEM.name = "Modified Colt M1911"
 ITEM.description = "Standard .45 caliber semi-automatic pistol with external mechanical modifications for increased performance."
 ITEM.model = Model("models/weapons/alyxgun/w_alyx_gun.mdl")
+ITEM.useSound = "rtbr_wpn/357/foley/357_cylinder_close_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 2

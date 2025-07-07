@@ -1,6 +1,7 @@
 ITEM.name = "AK-47"
 ITEM.description = "Gas-operated 7.62x39mm assault rifle with a stamped steel receiver and wooden furniture."
 ITEM.model = Model("models/weapons/akm/w_akm.mdl")
+ITEM.useSound = "rtbr_wpn/akm/foley/akm_bolt_pull_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 3

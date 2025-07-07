@@ -1,6 +1,7 @@
 ITEM.name = "XM29 OICW"
 ITEM.description = "Prototype weapon system combining a 5.56mm assault rifle with a 20mm grenade launcher."
 ITEM.model = Model("models/weapons/oicw/w_oicw.mdl")
+ITEM.useSound = "rtbr_wpn/oicw/foley/oicw_mag_futz_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 3

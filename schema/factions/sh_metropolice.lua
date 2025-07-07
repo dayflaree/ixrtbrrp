@@ -5,9 +5,12 @@ FACTION.models = {
 	"models/zrtbr/police.mdl",
 	"models/zrtbr/female_police.mdl"
 }
-FACTION.weapons = {"weapon_rtbr_stunstick"}
 FACTION.isDefault = false
 FACTION.isGloballyRecognized = true
+
+function FACTION:OnCharacterCreated(client, character)
+	character:GetInventory():Add("melee_stunstick", 1)
+end
 
 FACTION.gearSounds = {
 	"npc/metropolice/gear1.wav",
@@ -36,11 +39,39 @@ FACTION.painSounds = {
     "rtbr/npc/metropolice/pain4.wav"
 }
 
+FACTION.fempolicePainSounds = {
+	"rtbr/npc/fempolice/pain1.wav",
+    "rtbr/npc/fempolice/pain2.wav",
+    "rtbr/npc/fempolice/pain3.wav",
+    "rtbr/npc/fempolice/pain4.wav"
+}
+
+FACTION.elitepolicePainSounds = {
+	"rtbr/npc/elitepolice/pain1.wav",
+    "rtbr/npc/elitepolice/pain2.wav",
+    "rtbr/npc/elitepolice/pain3.wav",
+    "rtbr/npc/elitepolice/pain4.wav"
+}
+
 FACTION.deathSounds = {
 	"rtbr/npc/metropolice/die1.wav",
     "rtbr/npc/metropolice/die2.wav",
     "rtbr/npc/metropolice/die3.wav",
     "rtbr/npc/metropolice/die4.wav"
+}
+
+FACTION.fempoliceDeathSounds = {
+	"rtbr/npc/fempolice/die1.wav",
+    "rtbr/npc/fempolice/die2.wav",
+    "rtbr/npc/fempolice/die3.wav",
+    "rtbr/npc/fempolice/die4.wav"
+}
+
+FACTION.elitepoliceDeathSounds = {
+	"rtbr/npc/elitepolice/die1.wav",
+    "rtbr/npc/elitepolice/die2.wav",
+    "rtbr/npc/elitepolice/die3.wav",
+    "rtbr/npc/elitepolice/die4.wav"
 }
 
 FACTION.taglines = {
@@ -157,23 +188,39 @@ FACTION.spawnCam = {
     fov = 40
 }
 
--- Override Helix's pain sound system for Metropolice
 hook.Add("GetPlayerPainSound", "MetropolicePainSounds", function(client)
 	if IsValid(client) and client:Team() == FACTION_MPF then
 		local faction = ix.faction.Get(FACTION_MPF)
-		if faction and faction.painSounds then
-			return table.Random(faction.painSounds)
+		if faction then
+			local model = client:GetModel()
+			
+			-- Only return sounds for specific Metro Police models
+			if model == "models/zrtbr/police.mdl" then
+				return table.Random(faction.painSounds)
+			elseif model == "models/zrtbr/female_police.mdl" then
+				return table.Random(faction.fempolicePainSounds)
+			elseif model == "models/zrtbr/police_elite.mdl" then
+				return table.Random(faction.elitepolicePainSounds)
+			end
 		end
 	end
 end)
 
 -- Override Helix's death sound system for Metropolice
-hook.Add("PlayerDeathSound", "MetropoliceDeathSounds", function(client)
+hook.Add("GetPlayerDeathSound", "MetropoliceDeathSounds", function(client)
 	if IsValid(client) and client:Team() == FACTION_MPF then
 		local faction = ix.faction.Get(FACTION_MPF)
-		if faction and faction.deathSounds then
-			client:EmitSound(table.Random(faction.deathSounds), 80, 100, 1, CHAN_VOICE)
-			return false -- Prevent default death sound
+		if faction then
+			local model = client:GetModel()
+			
+			-- Only return sounds for specific Metro Police models
+			if model == "models/zrtbr/police.mdl" then
+				return table.Random(faction.deathSounds)
+			elseif model == "models/zrtbr/female_police.mdl" then
+				return table.Random(faction.fempoliceDeathSounds)
+			elseif model == "models/zrtbr/police_elite.mdl" then
+				return table.Random(faction.elitepoliceDeathSounds)
+			end
 		end
 	end
 end)

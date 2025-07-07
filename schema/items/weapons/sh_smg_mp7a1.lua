@@ -1,6 +1,7 @@
 ITEM.name = "H&K MP7A1"
 ITEM.description = "Personal defense weapon chambered in 4.6x30mm. Features folding stock and integrated foregrip."
 ITEM.model = Model("models/weapons/smg2/w_smg2.mdl")
+ITEM.useSound = "rtbr_wpn/smg1/foley/smg1_draw_03.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 3

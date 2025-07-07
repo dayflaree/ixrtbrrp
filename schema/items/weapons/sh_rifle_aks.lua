@@ -1,6 +1,7 @@
 ITEM.name = "AKS-74U"
 ITEM.description = "Compact 5.45x39mm carbine with a folding stock and shortened barrel."
 ITEM.model = Model("models/weapons/akmcarbine/w_akm.mdl")
+ITEM.useSound = "rtbr_wpn/akm/foley/akm_bolt_pull_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 3

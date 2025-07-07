@@ -1,6 +1,7 @@
 ITEM.name = "S&W Model 66"
 ITEM.description = "Double-action revolver chambered in .357 Magnum. Stainless steel construction with a six-round cylinder."
 ITEM.model = Model("models/weapons/357snubnose/w_357.mdl")
+ITEM.useSound = "rtbr_wpn/357/foley/357_cylinder_close_01.wav"
 ITEM.category = "Weapons"
 
 ITEM.width = 2
