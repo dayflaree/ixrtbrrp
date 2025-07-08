@@ -60,7 +60,7 @@ FACTION.taglines = {
 
 function FACTION:GetDefaultName(client)
     local tagline = string.upper(table.Random(self.taglines))
-    return "OTA-ECHO." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+    return tagline .. ":" .. Schema:ZeroNumber(math.random(1, 99), 2), true
 end
 
 function FACTION:OnTransferred(character)
@@ -68,13 +68,10 @@ function FACTION:OnTransferred(character)
 	character:SetModel(self.models[1])
 end
 
-function FACTION:OnNameChanged(client, oldValue, value)
+function FACTION:OnSpawn(client)
 	local character = client:GetCharacter()
-
-	if (!Schema:IsCombineRank(oldValue, "OWS") and Schema:IsCombineRank(value, "OWS")) then
-		character:JoinClass(CLASS_OWS)
-	elseif (!Schema:IsCombineRank(oldValue, "EOW") and Schema:IsCombineRank(value, "EOW")) then
-		character:JoinClass(CLASS_EOW)
+	if character then
+		character:SetName(self:GetDefaultName())
 	end
 end
 

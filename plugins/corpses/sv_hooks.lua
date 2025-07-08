@@ -98,7 +98,9 @@ function PLUGIN:OnPlayerCorpseCreated(ply, entity)
     local charInventory = char:GetInventory()
     if ( !charInventory ) then return end
 
-    charInventory:UnEquipAll()
+    if (charInventory and charInventory.UnEquipAll) then
+        charInventory:UnEquipAll()
+    end
 
     local bRandomItems = false
     local factionData = ix.faction.Get(char:GetFaction())
@@ -214,8 +216,6 @@ function PLUGIN:PlayerUse(ply, entity)
     if ( nextUse > CurTime() ) then return end
     nextUse = CurTime() + 1
 
-    // old jury code from minerva version 0.5b
-    /*
     if ( entity:GetClass() == "prop_ragdoll" ) then
         if ( !ply:KeyDown(IN_WALK) ) then
             if ( entity.ixInventory and !ix.storage.InUse(entity.ixInventory) ) then
@@ -250,7 +250,6 @@ function PLUGIN:PlayerUse(ply, entity)
 
         return false
     end
-    */
 end
 
 function PLUGIN:PlayerSpawn(ply)

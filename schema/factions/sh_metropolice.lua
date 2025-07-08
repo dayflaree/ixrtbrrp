@@ -8,10 +8,6 @@ FACTION.models = {
 FACTION.isDefault = false
 FACTION.isGloballyRecognized = true
 
-function FACTION:OnCharacterCreated(client, character)
-	character:GetInventory():Add("melee_stunstick", 1)
-end
-
 FACTION.gearSounds = {
 	"npc/metropolice/gear1.wav",
 	"npc/metropolice/gear2.wav", 
@@ -94,7 +90,7 @@ FACTION.taglines = {
 
 function FACTION:GetDefaultName(client)
     local tagline = string.upper(table.Random(self.taglines))
-    return "MPF-00." .. tagline .. "-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+    return tagline .. ".00:" .. Schema:ZeroNumber(math.random(1, 99), 2), true
 end
 
 function FACTION:OnTransferred(character)
@@ -102,28 +98,10 @@ function FACTION:OnTransferred(character)
 	character:SetModel(self.models[1])
 end
 
-function FACTION:OnNameChanged(client, oldValue, value)
+function FACTION:OnSpawn(client)
 	local character = client:GetCharacter()
-
-	if (!Schema:IsCombineRank(oldValue, "RCT") and Schema:IsCombineRank(value, "RCT")) then
-		character:JoinClass(CLASS_MPR)
-	elseif (!Schema:IsCombineRank(oldValue, "OfC") and Schema:IsCombineRank(value, "OfC")) then
-		character:SetModel("models/policetrench.mdl")
-	elseif (!Schema:IsCombineRank(oldValue, "EpU") and Schema:IsCombineRank(value, "EpU")) then
-		character:JoinClass(CLASS_EMP)
-
-		character:SetModel("models/leet_police2.mdl")
-	elseif (!Schema:IsCombineRank(oldValue, "DvL") and Schema:IsCombineRank(value, "DvL")) then
-		character:SetModel("models/eliteshockcp.mdl")
-	elseif (!Schema:IsCombineRank(oldValue, "SeC") and Schema:IsCombineRank(value, "SeC")) then
-		character:SetModel("models/sect_police2.mdl")
-	elseif (!Schema:IsCombineRank(oldValue, "SCN") and Schema:IsCombineRank(value, "SCN")
-	or !Schema:IsCombineRank(oldValue, "SHIELD") and Schema:IsCombineRank(value, "SHIELD")) then
-		character:JoinClass(CLASS_MPS)
-	end
-
-	if (!Schema:IsCombineRank(oldValue, "GHOST") and Schema:IsCombineRank(value, "GHOST")) then
-		character:SetModel("models/eliteghostcp.mdl")
+	if character then
+		character:SetName(self:GetDefaultName())
 	end
 end
 

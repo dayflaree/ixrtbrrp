@@ -6,8 +6,9 @@ function CLASS:OnSet(client)
 	local character = client:GetCharacter()
 
 	if (character) then
-		character:SetModel("models/combine_soldier.mdl")
+		character:SetModel("models/zrtbr/combine_soldier.mdl")
+		client:SetSkin(1)
 	end
 end
 
-CLASS_OWS = CLASS.index
+CLASS_BREACHER = CLASS.index
