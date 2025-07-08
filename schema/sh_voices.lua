@@ -1,5 +1,5 @@
 -- Male Metropolice
-Schema.voices.Add("MPF_Male", "119", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/metropolice/vo/11-99officerneedsassistance.wav", true)
+Schema.voices.Add("MPF_Male", "1199", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/metropolice/vo/11-99officerneedsassistance.wav", true)
 Schema.voices.Add("MPF_Male", "404", "404 zone", "rtbr/npc/metropolice/vo/404zone.wav", true)
 Schema.voices.Add("MPF_Male", "MOVE2", "I said move along!", "rtbr/npc/metropolice/vo/Isaidmovealong.wav", true)
 Schema.voices.Add("MPF_Male", "ACQUIRINGVISUAL", "Acquiring on visual!", "rtbr/npc/metropolice/vo/acquiringonvisual.wav", true)
@@ -318,7 +318,7 @@ Schema.voices.Add("MPF_Male", "0", "Zero", "rtbr/npc/metropolice/vo/zero.wav", t
 Schema.voices.Add("MPF_Male", "ZONE", "Zone", "rtbr/npc/metropolice/vo/zone.wav", true)
 
 -- Female Metropolice
-Schema.voices.Add("MPF_Female", "119", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/fempolice/vo/11-99officerneedsassistance.wav", true)
+Schema.voices.Add("MPF_Female", "1199", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/fempolice/vo/11-99officerneedsassistance.wav", true)
 Schema.voices.Add("MPF_Female", "404", "404 zone", "rtbr/npc/fempolice/vo/404zone.wav", true)
 Schema.voices.Add("MPF_Female", "MOVE2", "Move it", "rtbr/npc/fempolice/vo/Isaidmovealong.wav", true)
 Schema.voices.Add("MPF_Female", "ACQUIRINGVISUAL", "Acquiring on visual", "rtbr/npc/fempolice/vo/acquiringonvisual.wav", true)
@@ -619,7 +619,7 @@ Schema.voices.Add("MPF_Female", "0", "Zero", "rtbr/npc/fempolice/vo/zero.wav", t
 Schema.voices.Add("MPF_Female", "ZONE", "Zone", "rtbr/npc/fempolice/vo/zone.wav", true)
 
 -- Elite elitepolice
-Schema.voices.Add("MPF_Elite", "119", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/elitepolice/vo/11-99officerneedsassistance.wav", true)
+Schema.voices.Add("MPF_Elite", "1199", "Eleven-Nintey-Nine, officer needs assistance!", "rtbr/npc/elitepolice/vo/11-99officerneedsassistance.wav", true)
 Schema.voices.Add("MPF_Elite", "404", "404 zone", "rtbr/npc/elitepolice/vo/404zone.wav", true)
 Schema.voices.Add("MPF_Elite", "MOVE2", "I said move along!", "rtbr/npc/elitepolice/vo/Isaidmovealong.wav", true)
 Schema.voices.Add("MPF_Elite", "ACQUIRINGVISUAL", "Acquiring on visual!", "rtbr/npc/elitepolice/vo/acquiringonvisual.wav", true)

@@ -471,7 +471,10 @@ function PANEL:BuildSlots()
                     surface.DrawTexturedRect(2, 2, width - 4, height - 4)
                 else
                     local icon = ix.util.GetMaterial("icons/inventory/cmb_item.png")
-                    surface.SetDrawColor(50, 100, 50, 200)
+                    -- Check if the item is equipped
+                    local isEquipped = panel.item and IsValid(panel.item) and panel.item.GetData and panel.item:GetData("equip") == true
+                    local color = isEquipped and Color(50, 100, 50, 200) or Color(169, 169, 169, 200)
+                    surface.SetDrawColor(color)
                     surface.SetMaterial(icon)
                     surface.DrawTexturedRect(2, 2, width - 4, height - 4)
                 end

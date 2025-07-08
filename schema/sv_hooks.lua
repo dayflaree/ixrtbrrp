@@ -64,58 +64,64 @@ end
 function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers, rawText)
 	if (chatType == "ic" or chatType == "w" or chatType == "y" or chatType == "dispatch") then
 		local class = self.voices.GetClass(speaker)
-		
-		-- Check for multiple voicelines (space-separated)
-		local voicelineIDs = {}
-		local remainingText = ""
 		local foundVoicelines = {}
-		local combinedText = ""
-		
-		-- Split the text into words and check each for voicelines
+		local finalWords = {}
 		local words = {}
 		for word in rawText:gmatch("%S+") do
 			table.insert(words, word)
 		end
-		
-		-- Find voicelines at the beginning of the message
-		local voicelineCount = 0
+
 		for i, word in ipairs(words) do
 			local foundVoiceline = false
 			for k, v in ipairs(class) do
 				local info = self.voices.Get(v, word)
 				if (info) then
 					table.insert(foundVoicelines, info)
-					voicelineCount = voicelineCount + 1
+					table.insert(finalWords, info.text)
 					foundVoiceline = true
 					break
 				end
 			end
-			
-			-- If no voiceline found, this is the start of normal text
 			if not foundVoiceline then
-				remainingText = table.concat(words, " ", i)
-				break
+				table.insert(finalWords, word)
 			end
 		end
-		
-		-- Build combined text for voicelines
-		for i, info in ipairs(foundVoicelines) do
-			if i == 1 then
-				combinedText = info.text
-			else
-				combinedText = combinedText .. ". " .. info.text
+
+		-- Add periods between consecutive voicelines and at the end
+		if #finalWords > 0 then
+			for i = 1, #finalWords - 1 do
+				local currentWord = finalWords[i]
+				local nextWord = finalWords[i + 1]
+				
+				-- Check if current word is a voiceline and next word is also a voiceline
+				local currentIsVoiceline = false
+				local nextIsVoiceline = false
+				
+				for _, info in ipairs(foundVoicelines) do
+					if info.text == currentWord then
+						currentIsVoiceline = true
+					end
+					if info.text == nextWord then
+						nextIsVoiceline = true
+					end
+				end
+				
+				-- If current is voiceline and next is voiceline, add period to current
+				if currentIsVoiceline and nextIsVoiceline and not currentWord:match("[.!?]$") then
+					finalWords[i] = currentWord .. "."
+				end
+			end
+			
+			-- Add period to voicelines at the end of the message
+			local lastWord = finalWords[#finalWords]
+			for _, info in ipairs(foundVoicelines) do
+				if info.text == lastWord and not lastWord:match("[.!?]$") then
+					finalWords[#finalWords] = lastWord .. "."
+					break
+				end
 			end
 		end
-		
-		-- Add period to the end if the last voiceline doesn't end with punctuation
-		if #foundVoicelines > 1 then
-			local lastText = foundVoicelines[#foundVoicelines].text
-			if not lastText:match("[.!?]$") then
-				combinedText = combinedText .. "."
-			end
-		end
-		
-		-- If we found voicelines, play them and handle remaining text
+
 		if #foundVoicelines > 0 then
 			local volume = 80
 			if (chatType == "w") then
@@ -123,66 +129,47 @@ function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers,
 			elseif (chatType == "y") then
 				volume = 150
 			end
-			
-			-- Collect all sounds into one sequence
+
 			local allSounds = {}
 			for i, info in ipairs(foundVoicelines) do
 				table.insert(allSounds, info.sound)
-				
-				-- Add radio off sound after the last voiceline for Combine
 				if (speaker:IsCombine() and i == #foundVoicelines) then
 					table.insert(allSounds, "NPC_MetroPolice.Radio.Off")
 				end
 			end
-			
-			-- Play all sounds as one sequence
+
 			ix.util.EmitQueuedSounds(speaker, allSounds, nil, nil, volume)
-			
-			-- Combine voiceline text with remaining text
-			local finalText = combinedText
-			if remainingText ~= "" then
-				if #foundVoicelines > 1 then
-					finalText = finalText .. " " .. remainingText
-				else
-					finalText = finalText .. ". " .. remainingText
-				end
-			end
-			
+
+			local finalText = table.concat(finalWords, " ")
+
 			if (speaker:IsCombine()) then
 				return string.format("<:: %s ::>", finalText)
 			else
 				return finalText
 			end
 		end
-		
-		-- Original single voiceline logic
+
 		for k, v in ipairs(class) do
 			local info = self.voices.Get(v, rawText)
-
 			if (info) then
 				local volume = 80
-
 				if (chatType == "w") then
 					volume = 60
 				elseif (chatType == "y") then
 					volume = 150
 				end
-
 				if (info.sound) then
 					if (info.global) then
 						netstream.Start(nil, "PlaySound", info.sound)
 					else
 						local sounds = {info.sound}
-
 						if (speaker:IsCombine()) then
 							speaker.bTypingBeep = nil
 							sounds[#sounds + 1] = "NPC_MetroPolice.Radio.Off"
 						end
-
 						ix.util.EmitQueuedSounds(speaker, sounds, nil, nil, volume)
 					end
 				end
-
 				if (speaker:IsCombine()) then
 					return string.format("<:: %s ::>", info.text)
 				else
