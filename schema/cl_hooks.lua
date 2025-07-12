@@ -200,3 +200,105 @@ function Schema:HUDPaintBackground()
     draw.DrawText(Schema.name.."", "synapse.din.small", scrW / 2, ScreenScale(4), ColorAlpha(ix.config.Get("color"), 150), TEXT_ALIGN_CENTER)
     draw.DrawText("Everything you see may be subject to change!", "synapse.din.small", scrW / 2, ScreenScale(14), ColorAlpha(color_white, 100), TEXT_ALIGN_CENTER)
 end
+
+local find = ix.util.StringMatches
+local footsteps = {}
+local path = "rtbr/footsteps/"
+
+local function AddFootsteps(name)
+    footsteps[name] = {}
+    footsteps[name]["run"] = {}
+    footsteps[name]["walk"] = {}
+
+    for i = 1, 4 do
+        table.insert(footsteps[name]["run"], path .. name .. i .. ".wav")
+        table.insert(footsteps[name]["walk"], path .. name .. i .. ".wav")
+    end
+end
+
+AddFootsteps("concrete")
+AddFootsteps("dirt")
+AddFootsteps("duct")
+AddFootsteps("flesh")
+AddFootsteps("grass")
+AddFootsteps("gravel")
+AddFootsteps("metal")
+AddFootsteps("metalgrate")
+AddFootsteps("mud")
+AddFootsteps("sand")
+AddFootsteps("slosh")
+AddFootsteps("tile")
+AddFootsteps("wade")
+AddFootsteps("wood")
+AddFootsteps("woodpanel")
+
+function Schema:ModifyPlayerStep(ply, data)
+    local char = ply:GetCharacter()
+    if ( !char ) then return end
+
+    local inventory = char:GetInventory()
+    if ( !inventory ) then return end
+
+    local material = ply:GetSurfaceData()
+    material = string.lower(material.name)
+    print("Current material:", material)
+    
+    if ( ply:GetMoveType() == MOVETYPE_LADDER ) then
+        return
+    end
+
+    local footstepType = data.bRunning and "run" or "walk"
+    local footstepSounds = footsteps["concrete"][footstepType]
+    if ( !footstepSounds ) then return end
+
+    local footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    local bRunning = data.running
+
+    if ( find(material, "dirt") ) then
+        footstepSounds = footsteps["dirt"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "duct") ) then
+        footstepSounds = footsteps["duct"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "flesh") ) then
+        footstepSounds = footsteps["flesh"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "grass") ) then
+        footstepSounds = footsteps["grass"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "gravel") ) then
+        footstepSounds = footsteps["gravel"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+
+    elseif ( find(material, "metalgrate") ) then
+        footstepSounds = footsteps["metalgrate"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "metal") ) then
+        footstepSounds = footsteps["metal"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "mud") ) then
+        footstepSounds = footsteps["mud"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "sand") ) then
+        footstepSounds = footsteps["sand"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "slosh") ) then
+        footstepSounds = footsteps["slosh"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "tile") ) then
+        footstepSounds = footsteps["tile"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "wade") ) then
+        footstepSounds = footsteps["wade"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "wood_panel") ) then
+        footstepSounds = footsteps["woodpanel"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    elseif ( find(material, "wood") ) then
+        footstepSounds = footsteps["wood"][footstepType]
+        footstepPath = footstepSounds[math.random(1, #footstepSounds)]
+    end
+
+    data.snd = footstepPath
+    data.pitch = math.random(95, 105)
+end
