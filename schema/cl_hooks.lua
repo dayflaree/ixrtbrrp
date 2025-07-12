@@ -241,7 +241,6 @@ function Schema:ModifyPlayerStep(ply, data)
 
     local material = ply:GetSurfaceData()
     material = string.lower(material.name)
-    print("Current material:", material)
     
     if ( ply:GetMoveType() == MOVETYPE_LADDER ) then
         return
