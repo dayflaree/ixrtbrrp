@@ -20,17 +20,6 @@ if CLIENT then
     local ICON_SPACING = ICON_SIZE * 0.10
     local HUD_MARGIN = ScreenScale(12)
 
-    -- Animation variables for smooth icon transitions
-    local iconPositions = {}
-    local iconAlphas = {}
-    local animationSpeed = 8 -- higher = faster animation
-
-    -- Initialize icon positions and alphas
-    for i, icon in ipairs(ICONS) do
-        iconPositions[i] = 0
-        iconAlphas[i] = 0
-    end
-
     -- Flashing parameters
     local FLASH_SPEED = 1.2 -- seconds per cycle
     local DARK_COLOR = Color(50, 50, 50)
@@ -73,83 +62,33 @@ if CLIENT then
 
     hook.Add("HUDPaint", "ixIconHUD", function()
         if (!IsValid(LocalPlayer()) or !LocalPlayer():Alive()) then return end
-        
-        -- Only show HUD icons when inventory is open
-        if not IsValid(ix.gui.inv1) or not ix.gui.inv1:IsVisible() then return end
-        
         local x = HUD_MARGIN - ScreenScale(8) -- move icons further to the left
         local y = ScrH() - HUD_MARGIN - ICON_SIZE + ScreenScale(12) -- move icons down very slightly
-        
-        -- Calculate which icons should be visible and their target positions
-        local visibleIcons = {}
-        local currentX = x
-        
         for i, icon in ipairs(ICONS) do
-            local frac = math.Clamp(icon.get(), 0, 1)
-            
-            -- Only show icon if it has a value > 0
-            if frac > 0 then
-                table.insert(visibleIcons, {
-                    index = i,
-                    icon = icon,
-                    targetX = currentX,
-                    frac = frac
-                })
-                currentX = currentX + ICON_SIZE + ICON_SPACING
-            end
-        end
-        
-        -- Animate icon positions and alphas
-        for i, icon in ipairs(ICONS) do
-            local targetAlpha = 0
-            local targetPosition = 0
-            
-            -- Find if this icon should be visible
-            for _, visibleIcon in ipairs(visibleIcons) do
-                if visibleIcon.index == i then
-                    targetAlpha = 255
-                    targetPosition = visibleIcon.targetX - x
-                    break
-                end
-            end
-            
-            -- Smoothly animate alpha
-            iconAlphas[i] = Lerp(FrameTime() * animationSpeed, iconAlphas[i], targetAlpha)
-            
-            -- Smoothly animate position
-            iconPositions[i] = Lerp(FrameTime() * animationSpeed, iconPositions[i], targetPosition)
-        end
-        
-        -- Draw visible icons with animations
-        for i, icon in ipairs(ICONS) do
-            local alpha = iconAlphas[i]
-            if alpha <= 0 then continue end
-            
             local frac = math.Clamp(icon.get(), 0, 1)
             local mat = icon.mat
             local color = icon.color
-            local drawX = x + iconPositions[i]
-            
-            -- Apply alpha to colors
-            local darkColor = Color(DARK_COLOR.r, DARK_COLOR.g, DARK_COLOR.b, alpha)
-            local iconColor = Color(color.r, color.g, color.b, alpha)
-            
             -- Draw dark background icon
+            local flash = 1
+            if frac <= 0 then
+                flash = 0.5 + 0.5 * math.sin(CurTime() * (2 * math.pi / FLASH_SPEED))
+            end
             surface.SetMaterial(mat)
-            surface.SetDrawColor(darkColor)
-            surface.DrawTexturedRect(drawX, y, ICON_SIZE, ICON_SIZE)
-            
+            surface.SetDrawColor(DARK_COLOR.r, DARK_COLOR.g, DARK_COLOR.b, 255 * flash)
+            surface.DrawTexturedRect(x, y, ICON_SIZE, ICON_SIZE)
             -- Draw colored foreground icon, cropped from top to bottom
             if frac > 0 then
                 local cropH = ICON_SIZE * frac
                 local cropY = y + (ICON_SIZE - cropH)
+                -- Draw only the lower portion of the icon using UV cropping
                 surface.SetMaterial(mat)
-                surface.SetDrawColor(iconColor)
+                surface.SetDrawColor(color)
                 surface.DrawTexturedRectUV(
-                    drawX, cropY, ICON_SIZE, cropH,
+                    x, cropY, ICON_SIZE, cropH,
                     0, 1 - frac, 1, 1
                 )
             end
+            x = x + ICON_SIZE + ICON_SPACING
         end
     end)
 
@@ -162,9 +101,6 @@ if CLIENT then
         local stm = LocalPlayer():GetLocalVar("stm", 100)
         local belowMax = stm < 100
         local frac = math.Clamp(stm / 100, 0, 1)
-
-        -- Hide stamina bar when inventory is open
-        if IsValid(ix.gui.inv1) and ix.gui.inv1:IsVisible() then return end
 
         -- Smoothly interpolate the displayed fill
         displayedFrac = Lerp(FrameTime() * fillLerpSpeed, displayedFrac, frac)
@@ -243,10 +179,6 @@ if CLIENT then
     hook.Add("HUDPaint", "ixCustomAmmoCounter", function()
         local lp = LocalPlayer()
         if not IsValid(lp) or not lp:Alive() then return end
-        
-        -- Hide ammo counter when inventory is open
-        if IsValid(ix.gui.inv1) and ix.gui.inv1:IsVisible() then return end
-        
         local wep = lp:GetActiveWeapon()
         if not IsValid(wep) or not wep:Clip1() or wep:Clip1() < 0 then return end
         local clip = wep:Clip1()
